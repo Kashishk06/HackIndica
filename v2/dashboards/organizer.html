@@ -399,12 +399,19 @@
 
 <body>
     <div class="sidebar">
-        <h2><i class="fa-solid fa-bolt-lightning"></i> HackIndica<span>ORG</span></h2>
+        <h2 style="display: flex; align-items: center; gap: 10px;">
+            <img src="../../src/assets/icons/1000068550-removebg-preview.png" alt="Logo"
+                style="height: 30px; width: auto;">
+            HackIndica<span>ORG</span>
+        </h2>
         <a href="#" class="nav-item active" data-section="overview"><i class="fa-solid fa-chart-pie"></i> Overview</a>
         <a href="#" class="nav-item" data-section="events"><i class="fa-solid fa-calendar-check"></i> My Events</a>
-        <a href="#" class="nav-item" data-section="participants"><i class="fa-solid fa-users-viewfinder"></i> Participants</a>
-        <a href="#" class="nav-item" data-section="analytics"><i class="fa-solid fa-chart-line"></i> Global Analytics</a>
-        <a href="#" class="nav-item" data-section="notifications"><i class="fa-solid fa-envelope-open-text"></i> Notifications</a>
+        <a href="#" class="nav-item" data-section="participants"><i class="fa-solid fa-users-viewfinder"></i>
+            Participants</a>
+        <a href="#" class="nav-item" data-section="analytics"><i class="fa-solid fa-chart-line"></i> Global
+            Analytics</a>
+        <a href="#" class="nav-item" data-section="notifications"><i class="fa-solid fa-envelope-open-text"></i>
+            Notifications</a>
         <a href="#" class="nav-item" data-section="settings"><i class="fa-solid fa-gear"></i> Settings</a>
         <a href="#" class="nav-item logout-btn" id="logoutBtn"><i class="fa-solid fa-arrow-right-from-bracket"></i>
             Logout</a>
@@ -541,16 +548,24 @@
                         <p style="color: var(--text-mid)">Real-time submission and registration trends.</p>
                     </div>
                 </div>
-                
+
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-                    <div class="stat-card" style="height: 300px; display: flex; align-items: flex-end; gap: 1rem; padding: 2rem;">
-                        <div style="flex: 1; background: var(--primary); height: 40%; border-radius: 8px 8px 0 0;"></div>
-                        <div style="flex: 1; background: var(--primary); height: 60%; border-radius: 8px 8px 0 0;"></div>
-                        <div style="flex: 1; background: var(--primary); height: 85%; border-radius: 8px 8px 0 0;"></div>
-                        <div style="flex: 1; background: var(--primary); height: 45%; border-radius: 8px 8px 0 0;"></div>
-                        <div style="flex: 1; background: var(--primary); height: 95%; border-radius: 8px 8px 0 0; box-shadow: 0 0 20px var(--primary-glow);"></div>
+                    <div class="stat-card"
+                        style="height: 300px; display: flex; align-items: flex-end; gap: 1rem; padding: 2rem;">
+                        <div style="flex: 1; background: var(--primary); height: 40%; border-radius: 8px 8px 0 0;">
+                        </div>
+                        <div style="flex: 1; background: var(--primary); height: 60%; border-radius: 8px 8px 0 0;">
+                        </div>
+                        <div style="flex: 1; background: var(--primary); height: 85%; border-radius: 8px 8px 0 0;">
+                        </div>
+                        <div style="flex: 1; background: var(--primary); height: 45%; border-radius: 8px 8px 0 0;">
+                        </div>
+                        <div
+                            style="flex: 1; background: var(--primary); height: 95%; border-radius: 8px 8px 0 0; box-shadow: 0 0 20px var(--primary-glow);">
+                        </div>
                     </div>
-                    <div class="stat-card" style="display: flex; flex-direction: column; justify-content: center; gap: 1.5rem;">
+                    <div class="stat-card"
+                        style="display: flex; flex-direction: column; justify-content: center; gap: 1.5rem;">
                         <div>
                             <span style="font-size: 0.7rem; color: var(--text-mid);">MOST ACTIVE DOMAIN</span>
                             <h4 style="font-size: 1.5rem; color: var(--primary);">Artificial Intelligence</h4>
