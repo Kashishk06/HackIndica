@@ -607,6 +607,61 @@
         </div>
     </div>
 
+    <!-- Application Modal -->
+    <div class="modal" id="applyModal">
+        <div class="modal-content" style="max-width: 700px; max-height: 90vh; overflow-y: auto;">
+            <i class="fa-solid fa-xmark close-modal" id="closeApplyModal"></i>
+            <h2>Hackathon Application</h2>
+            <p style="color: var(--text-mid); margin-bottom: 2rem;">Secure your spot by providing your project and team
+                details.</p>
+
+            <form id="applyHackForm">
+                <input type="hidden" id="apply-hackId">
+
+                <div class="form-card"
+                    style="padding: 1.5rem; margin-bottom: 2rem; background: rgba(255,255,255,0.02);">
+                    <h3 style="margin-bottom: 1rem; font-size: 1rem; color: var(--primary);">1. Team Information</h3>
+                    <div class="form-group">
+                        <label>Team Name</label>
+                        <input type="text" id="apply-teamName" placeholder="e.g. Cyber Guardians" required>
+                    </div>
+                    <div id="teamMembersContainer">
+                        <!-- Dynamic member fields injected here -->
+                    </div>
+                </div>
+
+                <div class="form-card"
+                    style="padding: 1.5rem; margin-bottom: 2rem; background: rgba(255,255,255,0.02);">
+                    <h3 style="margin-bottom: 1rem; font-size: 1rem; color: var(--primary);">2. Project Details</h3>
+                    <div class="form-group">
+                        <label>Project Title</label>
+                        <input type="text" id="apply-projectTitle" placeholder="What are you building?" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Project Description</label>
+                        <textarea id="apply-projectDesc" rows="4"
+                            placeholder="Describe the problem and your solution..." required></textarea>
+                    </div>
+                </div>
+
+                <div class="form-card"
+                    style="padding: 1.5rem; margin-bottom: 2rem; background: rgba(255,255,255,0.02);">
+                    <h3 style="margin-bottom: 1rem; font-size: 1rem; color: var(--primary);">3. Submission Links</h3>
+                    <div class="form-group">
+                        <label>GitHub Repository Link</label>
+                        <input type="url" id="apply-github" placeholder="https://github.com/your-repo" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Google Drive PPT Link</label>
+                        <input type="url" id="apply-ppt" placeholder="Link to your presentation/pitch deck" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="submitApplyBtn">Submit Application</button>
+            </form>
+        </div>
+    </div>
+
     <script type="module">
         import { requireAuth, logout } from '../auth.js';
         import { db } from '../db.js';
@@ -699,33 +754,95 @@
                     btn.onclick = async (e) => {
                         const b = e.currentTarget;
                         const hackId = b.dataset.id;
+                        const hack = hacks.find(h => h.id === hackId);
 
-                        b.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
-                        b.classList.add('btn-loading');
+                        // Open Application Modal
+                        const modal = document.getElementById('applyModal');
+                        const memberContainer = document.getElementById('teamMembersContainer');
+                        document.getElementById('apply-hackId').value = hackId;
 
-                        try {
-                            await db.addDocument('registrations', {
-                                hackId: hackId,
-                                userId: session.uid,
-                                userName: session.name,
-                                userEmail: session.email,
-                                appliedAt: new Date().toISOString()
-                            });
-
-                            setTimeout(() => {
-                                b.innerHTML = '<i class="fa-solid fa-check"></i> Applied Success';
-                                b.style.background = '#059669';
-                                b.disabled = true;
-                                showToast();
-                                loadMyProjects(); // Update project count in other section
-                            }, 300);
-                        } catch (err) {
-                            alert('Failed to register: ' + err.message);
-                            b.innerHTML = 'Apply to Hack';
+                        // Generate member fields based on hackathon limit (default 4)
+                        const limit = parseInt(hack.teamLimit || 4);
+                        memberContainer.innerHTML = '';
+                        for (let i = 1; i <= limit; i++) {
+                            memberContainer.innerHTML += `
+                                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                                    <input type="text" class="apply-mem-name" placeholder="Member ${i} Name" ${i === 1 ? `value="${session.name}" readonly` : ''}>
+                                    <input type="text" class="apply-mem-email" placeholder="Email" ${i === 1 ? `value="${session.email}" readonly` : ''}>
+                                </div>
+                            `;
                         }
+
+                        modal.style.display = 'flex';
                     };
                 });
             }
+
+            document.getElementById('closeApplyModal').onclick = () => {
+                document.getElementById('applyModal').style.display = 'none';
+            };
+
+            document.getElementById('applyHackForm').onsubmit = async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('submitApplyBtn');
+                const hackId = document.getElementById('apply-hackId').value;
+                const hacks = await db.getCollection('hackathons');
+                const hack = hacks.find(h => h.id === hackId);
+
+                btn.classList.add('btn-loading');
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+
+                const members = [];
+                document.querySelectorAll('.apply-mem-name').forEach((input, i) => {
+                    const name = input.value;
+                    const email = document.querySelectorAll('.apply-mem-email')[i].value;
+                    if (name && email) {
+                        members.push({ name, email, isLead: i === 0 });
+                    }
+                });
+
+                const applicationData = {
+                    hackId: hackId,
+                    hackName: hack.name,
+                    userId: session.uid,
+                    teamName: document.getElementById('apply-teamName').value,
+                    members: members,
+                    projectTitle: document.getElementById('apply-projectTitle').value,
+                    projectDesc: document.getElementById('apply-projectDesc').value,
+                    github: document.getElementById('apply-github').value,
+                    ppt: document.getElementById('apply-ppt').value,
+                    status: 'pending',
+                    appliedAt: new Date().toISOString()
+                };
+
+                try {
+                    // 1. Add to registrations
+                    await db.addDocument('registrations', {
+                        hackId: hackId,
+                        userId: session.uid,
+                        userName: session.name,
+                        appliedAt: applicationData.appliedAt
+                    });
+
+                    // 2. Add to submissions (as the initial application)
+                    await db.addDocument('submissions', {
+                        ...applicationData,
+                        submittedAt: applicationData.appliedAt
+                    });
+
+                    setTimeout(() => {
+                        document.getElementById('applyModal').style.display = 'none';
+                        showToast();
+                        renderHacks();
+                        loadMyProjects();
+                        alert('Application submitted successfully! Your team is now registered.');
+                    }, 500);
+                } catch (err) {
+                    alert('Application failed: ' + err.message);
+                    btn.classList.remove('btn-loading');
+                    btn.innerHTML = 'Submit Application';
+                }
+            };
 
             async function loadMyProjects() {
                 const list = document.getElementById('myProjectsList');
@@ -754,7 +871,8 @@
                     return `
                         <div class="hack-card animate__animated animate__fadeIn">
                             <span class="domain-tag">${h.domain}</span>
-                            <h2>${h.name}</h2>
+                            <h2>${sub ? sub.projectTitle : h.name}</h2>
+                            <p style="margin-bottom: 1rem;">${sub ? sub.projectDesc : `You have successfully joined ${h.name}. Complete your submission before the deadline.`}</p>
                             
                             ${subStatus === 'scored' ? `
                                 <div style="background: rgba(16, 185, 129, 0.1); padding: 1.5rem; border-radius: 16px; margin: 1rem 0;">
@@ -764,50 +882,35 @@
                                 </div>
                             ` : ''}
 
-                            <div class="meta-info" style="margin-bottom: 2rem;">
+                            <div class="meta-info" style="margin-bottom: 1rem;">
                                 <span><i class="fa-solid fa-clock"></i> Status: ${subStatus.replace('_', ' ').toUpperCase()}</span>
                             </div>
+
+                            ${sub && sub.github ? `
+                                <div style="display: flex; gap: 10px; margin-bottom: 2rem;">
+                                    <a href="${sub.github}" target="_blank" class="btn btn-outline" style="margin-top: 0; padding: 0.5rem; text-decoration: none; text-align: center;"><i class="fa-brands fa-github"></i> Bridge Code</a>
+                                    <a href="${sub.ppt}" target="_blank" class="btn btn-outline" style="margin-top: 0; padding: 0.5rem; text-decoration: none; text-align: center;"><i class="fa-solid fa-file-powerpoint"></i> Deck</a>
+                                </div>
+                            ` : ''}
                             
-                            ${subStatus === 'not_submitted' || subStatus === 'pending' ? `
-                                <button class="btn btn-primary submit-project-btn" data-id="${h.id}" ${subStatus === 'pending' ? 'disabled' : ''}>
-                                    ${subStatus === 'pending' ? 'Pending Review' : 'Submit Project'}
+                            ${subStatus === 'not_submitted' ? `
+                                <button class="btn btn-primary submit-project-btn" data-id="${h.id}">
+                                    Complete Application
                                 </button>
+                            ` : subStatus === 'pending' ? `
+                                <button class="btn btn-outline" disabled style="background: rgba(255,255,255,0.05);">Pending Review</button>
                             ` : '<button class="btn btn-outline" disabled>Evaluation Finalized</button>'}
                         </div>
                     `;
                 }).join('');
 
                 document.querySelectorAll('.submit-project-btn').forEach(btn => {
-                    btn.onclick = async (e) => {
-                        const hackId = e.currentTarget.dataset.id;
-                        const hackName = hacks.find(h => h.id === hackId).name;
-
-                        const projectTitle = prompt(`Enter your project title for ${hackName}:`);
-                        if (!projectTitle) return;
-
-                        e.currentTarget.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
-                        e.currentTarget.disabled = true;
-
-                        try {
-                            await db.addDocument('submissions', {
-                                hackId,
-                                hackName,
-                                userId: session.uid,
-                                userName: session.name,
-                                projectTitle,
-                                status: 'pending',
-                                submittedAt: new Date().toISOString()
-                            });
-
-                            setTimeout(() => {
-                                e.currentTarget.innerHTML = '<i class="fa-solid fa-check"></i> Project Submitted';
-                                e.currentTarget.style.background = '#0ea5e9';
-                                alert(`Success! Your project "${projectTitle}" has been queued for judging.`);
-                            }, 300);
-                        } catch (err) {
-                            alert('Submission failed: ' + err.message);
-                            e.currentTarget.disabled = false;
-                        }
+                    btn.onclick = () => {
+                        sections.forEach(sec => sec.style.display = 'none');
+                        document.getElementById('section-explore').style.display = 'block';
+                        navItems.forEach(nav => nav.classList.remove('active'));
+                        document.querySelector('[data-section="explore"]').classList.add('active');
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
                     };
                 });
             }

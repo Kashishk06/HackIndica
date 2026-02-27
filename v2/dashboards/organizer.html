@@ -679,6 +679,11 @@
                     </div>
 
                     <div class="form-group">
+                        <label>Max Team Size</label>
+                        <input type="number" id="h-team-limit" placeholder="e.g. 4" min="1" value="4" required>
+                    </div>
+
+                    <div class="form-group">
                         <label>Prize Pool (₹)</label>
                         <input type="text" id="h-prize" placeholder="e.g. 5,00,000" required>
                     </div>
@@ -912,6 +917,7 @@
                     name: document.getElementById('h-name').value,
                     domain: document.getElementById('h-domain').value,
                     location: document.getElementById('h-loc').value,
+                    teamLimit: document.getElementById('h-team-limit').value,
                     prizePool: document.getElementById('h-prize').value,
                     fees: document.getElementById('h-fees').value,
                     startDate: document.getElementById('h-start').value,
