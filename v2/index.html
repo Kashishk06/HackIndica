@@ -396,6 +396,65 @@
             }
         }
 
+        /* ── Marquee ── */
+        .marquee-container {
+            margin-top: 10rem;
+            overflow: hidden;
+            display: flex;
+            user-select: none;
+            gap: 2rem;
+            mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+        }
+
+        .marquee-content {
+            flex-shrink: 0;
+            display: flex;
+            justify-content: space-around;
+            min-width: 100%;
+            gap: 2rem;
+            animation: scroll-left 40s linear infinite;
+        }
+
+        @keyframes scroll-left {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(calc(-100% - 2rem));
+            }
+        }
+
+        .domain-tag {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            padding: 1.2rem 3.5rem;
+            border-radius: 99px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-mid);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+
+        .domain-tag:hover {
+            border-color: var(--primary);
+            color: #fff;
+            background: rgba(99, 102, 241, 0.1);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+        }
+
+        .domain-tag i {
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+
         /* ── Footer ── */
         footer {
             margin-top: 10rem;
@@ -596,6 +655,33 @@
                 <p style="color: var(--text-mid); font-size: 1rem; margin-top: 15px;">Easily explore hackathons using
                     city and domain filters, helping participants quickly find events that match their interests and
                     location.</p>
+            </div>
+        </div>
+
+        <!-- Marquee Section -->
+        <div class="marquee-container reveal">
+            <div class="marquee-content">
+                <div class="domain-tag"><i class="fa-solid fa-brain"></i> Artificial Intelligence</div>
+                <div class="domain-tag"><i class="fa-solid fa-link"></i> Web3 & Blockchain</div>
+                <div class="domain-tag"><i class="fa-solid fa-code"></i> Open Innovation</div>
+                <div class="domain-tag"><i class="fa-solid fa-shield-halved"></i> Cybersecurity</div>
+                <div class="domain-tag"><i class="fa-solid fa-heart-pulse"></i> HealthTech</div>
+                <div class="domain-tag"><i class="fa-solid fa-leaf"></i> Sustainability</div>
+                <div class="domain-tag"><i class="fa-solid fa-coins"></i> FinTech</div>
+                <div class="domain-tag"><i class="fa-solid fa-microchip"></i> IoT & Hardware</div>
+                <div class="domain-tag"><i class="fa-solid fa-gamepad"></i> Gaming & Metaverse</div>
+            </div>
+            <!-- Duplicate for infinite effect -->
+            <div class="marquee-content" aria-hidden="true">
+                <div class="domain-tag"><i class="fa-solid fa-brain"></i> Artificial Intelligence</div>
+                <div class="domain-tag"><i class="fa-solid fa-link"></i> Web3 & Blockchain</div>
+                <div class="domain-tag"><i class="fa-solid fa-code"></i> Open Innovation</div>
+                <div class="domain-tag"><i class="fa-solid fa-shield-halved"></i> Cybersecurity</div>
+                <div class="domain-tag"><i class="fa-solid fa-heart-pulse"></i> HealthTech</div>
+                <div class="domain-tag"><i class="fa-solid fa-leaf"></i> Sustainability</div>
+                <div class="domain-tag"><i class="fa-solid fa-coins"></i> FinTech</div>
+                <div class="domain-tag"><i class="fa-solid fa-microchip"></i> IoT & Hardware</div>
+                <div class="domain-tag"><i class="fa-solid fa-gamepad"></i> Gaming & Metaverse</div>
             </div>
         </div>
     </main>
