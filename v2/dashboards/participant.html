@@ -668,11 +668,20 @@
                         <div class="hack-card animate__animated animate__fadeInUp" style="animation-delay: ${i * 0.1}s">
                             <span class="domain-tag">${h.domain}</span>
                             <h2>${h.name}</h2>
-                            <p>Join thousands of builders in this premium ${h.domain} experience. Collaborate, innovate and win.</p>
+                            <p style="margin-bottom: 1rem;">${h.themes ? h.themes.substring(0, 80) + '...' : `Join thousands of builders in this premium ${h.domain} experience. Collaborate and win.`}</p>
                             
+                            <div style="margin-bottom: 1.5rem; display: flex; flex-wrap: wrap; gap: 10px;">
+                                <span style="background: rgba(16, 185, 129, 0.1); color: var(--primary); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700;">
+                                    <i class="fa-solid fa-trophy"></i> ₹${h.prizePool || 'TBD'}
+                                </span>
+                                <span style="background: rgba(255, 255, 255, 0.05); color: var(--text-mid); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem;">
+                                    <i class="fa-solid fa-tag"></i> ${h.fees > 0 ? `₹${h.fees}` : 'FREE'}
+                                </span>
+                            </div>
+
                             <div class="meta-info">
                                 <span><i class="fa-solid fa-location-dot"></i> ${h.location}</span>
-                                <span><i class="fa-solid fa-calendar"></i> ${new Date().toLocaleDateString()}</span>
+                                <span><i class="fa-solid fa-calendar"></i> ${h.startDate || new Date().toLocaleDateString()}</span>
                             </div>
                             
                             <button class="btn ${isReg ? 'btn-outline' : 'btn-primary'} reg-btn" 

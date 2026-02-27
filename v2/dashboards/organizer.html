@@ -360,16 +360,43 @@
         .modal {
             background: var(--surface);
             border: 1px solid var(--border);
-            padding: 3rem;
+            padding: 2.5rem;
             border-radius: 32px;
-            width: 100%;
-            max-width: 500px;
+            width: 95%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
             box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
         }
 
+        .modal::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .modal::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 10px;
+        }
+
         .modal h2 {
-            margin-bottom: 1.5rem;
+            margin-bottom: 0.5rem;
             font-weight: 800;
+        }
+
+        .modal p {
+            color: var(--text-mid);
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
         }
 
         .form-group {
@@ -385,7 +412,8 @@
         }
 
         .form-group input,
-        .form-group select {
+        .form-group select,
+        .form-group textarea {
             width: 100%;
             padding: 0.8rem 1.2rem;
             background: rgba(255, 255, 255, 0.05);
@@ -393,6 +421,21 @@
             border-radius: 12px;
             color: white;
             font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary);
+            background: rgba(16, 185, 129, 0.05);
         }
     </style>
 </head>
@@ -607,29 +650,86 @@
 
     <!-- Create Hackathon Modal -->
     <div class="modal-overlay" id="modalOverlay">
-        <div class="modal animate__animated animate__zoomIn">
+        <div class="modal animate__animated animate__fadeInUp">
             <h2>Launch New Event</h2>
+            <p>Fill in the details below to create a premium hackathon experience.</p>
+
             <form id="createHackathonForm">
-                <div class="form-group">
-                    <label>Event Name</label>
-                    <input type="text" id="h-name" placeholder="e.g. AI Innovation Hub" required>
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label>Event Name</label>
+                        <input type="text" id="h-name" placeholder="e.g. AI Innovation Hub 2024" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Technology Domain</label>
+                        <select id="h-domain">
+                            <option value="ai-ml">Artificial Intelligence</option>
+                            <option value="web3">Web3 & Blockchain</option>
+                            <option value="open">Open Innovation</option>
+                            <option value="fintech">FinTech</option>
+                            <option value="healthcare">Healthcare</option>
+                            <option value="sustainability">Sustainability</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Location / Mode</label>
+                        <input type="text" id="h-loc" placeholder="Virtual or City Name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Prize Pool (₹)</label>
+                        <input type="text" id="h-prize" placeholder="e.g. 5,00,000" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Registration Fees (₹)</label>
+                        <input type="number" id="h-fees" placeholder="0 for Free" value="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Start Date</label>
+                        <input type="date" id="h-start" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>End Date</label>
+                        <input type="date" id="h-end" required>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Problem Statement & Themes</label>
+                        <textarea id="h-themes" placeholder="Describe the core challenges and tracks..."></textarea>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Event Guidelines</label>
+                        <textarea id="h-guidelines"
+                            placeholder="Rules, eligibility, and submission requirements..."></textarea>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Timeline</label>
+                        <textarea id="h-timeline"
+                            placeholder="Phase 1: Registration, Phase 2: Idea Submission..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Organizer Name</label>
+                        <input type="text" id="h-org-name" placeholder="Name of organization/company" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Contact Detail</label>
+                        <input type="text" id="h-contact" placeholder="Email or Phone Number" required>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Technology Domain</label>
-                    <select id="h-domain">
-                        <option value="ai-ml">Artificial Intelligence</option>
-                        <option value="web3">Web3 & Blockchain</option>
-                        <option value="open">Open Innovation</option>
-                        <option value="fintech">FinTech</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Location / Mode</label>
-                    <input type="text" id="h-loc" placeholder="Virtual or City Name" required>
-                </div>
-                <div style="display: flex; gap: 12px; margin-top: 2rem;">
+
+                <div
+                    style="display: flex; gap: 12px; margin-top: 2rem; position: sticky; bottom: 0; background: var(--surface); padding-top: 1rem; border-top: 1px solid var(--border);">
                     <button type="button" class="btn btn-outline" style="flex: 1;" id="closeModalBtn">Cancel</button>
-                    <button type="submit" class="btn btn-primary" style="flex: 2;">Launch Hackathon</button>
+                    <button type="submit" class="btn btn-primary" style="flex: 2;">Confirm & Launch Event</button>
                 </div>
             </form>
         </div>
@@ -747,8 +847,12 @@
                         <div>
                             <strong style="font-size: 1.2rem;">${h.name}</strong>
                             <p style="color: var(--text-mid); font-size: 0.9rem;">${h.domain.toUpperCase()} | ${h.location}</p>
+                            <div style="margin-top: 8px; font-size: 0.8rem; display: flex; gap: 15px;">
+                                <span style="color: var(--primary); font-weight: 700;"><i class="fa-solid fa-trophy"></i> ₹${h.prizePool || 'TBD'}</span>
+                                <span style="color: var(--text-mid);"><i class="fa-solid fa-calendar-days"></i> Starts: ${h.startDate || 'TBD'}</span>
+                            </div>
                         </div>
-                        <button class="btn btn-outline">Edit Event</button>
+                        <button class="btn btn-outline">Manage Event</button>
                     </div>
                 `).join('');
             }
@@ -808,6 +912,15 @@
                     name: document.getElementById('h-name').value,
                     domain: document.getElementById('h-domain').value,
                     location: document.getElementById('h-loc').value,
+                    prizePool: document.getElementById('h-prize').value,
+                    fees: document.getElementById('h-fees').value,
+                    startDate: document.getElementById('h-start').value,
+                    endDate: document.getElementById('h-end').value,
+                    themes: document.getElementById('h-themes').value,
+                    guidelines: document.getElementById('h-guidelines').value,
+                    timeline: document.getElementById('h-timeline').value,
+                    organizerName: document.getElementById('h-org-name').value,
+                    contact: document.getElementById('h-contact').value,
                     organizerId: session.uid,
                     status: 'active'
                 };
