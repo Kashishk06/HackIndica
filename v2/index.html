@@ -355,6 +355,146 @@
                 display: none;
             }
         }
+
+        /* ── Footer ── */
+        footer {
+            margin-top: 10rem;
+            background: rgba(14, 16, 32, 0.4);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--glass-border);
+            padding: 80px 5% 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1.5fr;
+            gap: 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-brand h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .footer-brand p {
+            color: var(--text-mid);
+            line-height: 1.8;
+            max-width: 320px;
+        }
+
+        .footer-links h4 {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links ul li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links ul li a {
+            color: var(--text-mid);
+            text-decoration: none;
+            transition: 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .footer-links ul li a:hover {
+            color: var(--primary);
+            padding-left: 8px;
+        }
+
+        .footer-newsletter h4 {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 6px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .newsletter-form input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            padding: 10px 15px;
+            flex: 1;
+            outline: none;
+        }
+
+        .footer-bottom {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+            color: var(--text-lo);
+            font-size: 0.9rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .social-links a {
+            color: var(--text-mid);
+            font-size: 1.2rem;
+            transition: 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .footer-bg-blob {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, var(--primary-glow), transparent 70%);
+            bottom: -200px;
+            right: -100px;
+            opacity: 0.1;
+            filter: blur(80px);
+            z-index: 0;
+        }
+
+        @media (max-width: 768px) {
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+        }
     </style>
 </head>
 
@@ -397,25 +537,72 @@
         <!-- Stats Grid -->
         <div class="grid" style="margin-top: 8rem;">
             <div class="card col-4">
-                <span class="tag">Engine</span>
-                <h3>JSON Schema v2</h3>
-                <p style="color: var(--text-mid); font-size: 1rem; margin-top: 15px;">Proprietary local indexing system
-                    providing ACID-like properties for client-side storage.</p>
+
+                <h3>judge evaluation</h3>
+                <p style="color: var(--text-mid); font-size: 1rem; margin-top: 15px;">score teams based on predefined
+                    criteria, generating automatic leaderboards and results.</p>
             </div>
             <div class="card col-4">
-                <span class="tag">Latency</span>
-                <h3>0ms Backend</h3>
-                <p style="color: var(--text-mid); font-size: 1rem; margin-top: 15px;">By eliminating network round-trips
-                    for core logic, HackIndica v2 responds instantly.</p>
-            </div>
-            <div class="card col-4">
-                <span class="tag">Design</span>
-                <h3>Glassmorphism</h3>
-                <p style="color: var(--text-mid); font-size: 1rem; margin-top: 15px;">Tailored with a deep navy palette
-                    and vibrant accents for a premium professional feel.</p>
+
+                <h3>collaboration and easier team seeking</h3>
+                <p style="color: var(--text-mid); font-size: 1rem; margin-top: 15px;">Participants can easily find
+                    teammates, send join requests, and build teams based on skills, enabling smooth collaboration and
+                    effective project development during the hackathon.</p>
             </div>
         </div>
     </main>
+
+    <footer class="animate__animated animate__fadeIn">
+        <div class="footer-bg-blob"></div>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <img src="../src/assets/icons/1000068550-removebg-preview.png" alt="Logo"
+                    style="height: 80px; width: auto; margin-bottom: 1.5rem;">
+                <p>Empowering the next generation of innovators with a seamless, national-scale hackathon orchestration
+                    layer.</p>
+            </div>
+
+            <div class="footer-links">
+                <h4>Platform</h4>
+                <ul>
+                    <li><a href="#events">Live Events</a></li>
+                    <li><a href="#">Leaderboards</a></li>
+                    <li><a href="#">Judge Portal</a></li>
+                    <li><a href="#">API Docs</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-newsletter">
+                <h4>Stay Updated</h4>
+                <p style="color: var(--text-mid); font-size: 0.9rem; margin-bottom: 1.5rem;">Get the latest event alerts
+                    and platform updates.</p>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Enter your email">
+                    <button class="btn btn-primary" style="padding: 10px 20px; border-radius: 8px;">Join</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 HackIndica PRO. All rights reserved.</p>
+            <div class="social-links">
+                <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+                <a href="#"><i class="fa-brands fa-github"></i></a>
+                <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="#"><i class="fa-brands fa-discord"></i></a>
+            </div>
+        </div>
+    </footer>
 
     <script type="module" src="app.js"></script>
 </body>
