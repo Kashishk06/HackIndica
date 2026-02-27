@@ -1,7 +1,7 @@
 /**
  * auth.js  – JSON/localStorage backend (replaces Firebase Auth)
  *
- * Session is stored in sessionStorage under key "hackmaster_session":
+ * Session is stored in sessionStorage under key "HackIndica_session":
  *   { uid, email, role, name, organization, phone }
  *
  * Passwords are stored as plain strings in localStorage (for demo purposes).
@@ -11,8 +11,8 @@
 import { db, generateId, FieldValue } from "./db.js";
 import { showToast, validateEmail, validatePhone } from "./utils.js";
 
-const SESSION_KEY = "hackmaster_session";
-const OTP_KEY = "hackmaster_otp";
+const SESSION_KEY = "HackIndica_session";
+const OTP_KEY = "HackIndica_otp";
 
 // ── Simple "hash" (NOT secure – demo only) ────────────────────────────────────
 function simpleHash(str) {

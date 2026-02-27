@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expert Review Panel | HackMaster PRO</title>
+    <title>Expert Review Panel | HackIndica PRO</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -180,6 +180,39 @@
             background: rgba(244, 63, 94, 0.05);
         }
 
+        .feedback-input {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: white;
+            font-family: inherit;
+            outline: none;
+            resize: none;
+        }
+
+        .eval-card {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 2rem;
+        }
+
+        .scoring-zone {
+            width: 100%;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .total-badge {
+            background: var(--primary);
+            padding: 5px 15px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 1.2rem;
+        }
+
         .btn-submit {
             padding: 12px 25px;
             background: var(--primary);
@@ -215,7 +248,7 @@
 
 <body>
     <div class="sidebar">
-        <h2><i class="fa-solid fa-gavel"></i> HackMaster<span>EVAL</span></h2>
+        <h2><i class="fa-solid fa-gavel"></i> HackIndica<span>EVAL</span></h2>
         <a href="#" class="nav-item active" data-section="pending"><i class="fa-solid fa-hourglass-start"></i> Pending
             Reviews</a>
         <a href="#" class="nav-item" data-section="completed"><i class="fa-solid fa-check-circle"></i> Scored
@@ -316,48 +349,85 @@
 
                 list.innerHTML = pending.map(p => `
                     <div class="eval-card animate__animated animate__fadeInUp">
-                        <div class="project-info">
-                            <small style="color: var(--primary); font-weight: 800; text-transform: uppercase;">${p.hackName}</small>
-                            <h3>${p.projectTitle}</h3>
-                            <p><i class="fa-solid fa-users"></i> Author: ${p.userName}</p>
+                        <div style="display: flex; justify-content: space-between; width: 100%; align-items: flex-start;">
+                            <div class="project-info">
+                                <small style="color: var(--primary); font-weight: 800; text-transform: uppercase;">${p.hackName}</small>
+                                <h3 style="font-size: 1.8rem; margin: 10px 0;">${p.projectTitle}</h3>
+                                <p><i class="fa-solid fa-users"></i> Author: ${p.userName}</p>
+                            </div>
+                            <div class="total-display" style="text-align: right;">
+                                <span style="font-size: 0.7rem; display: block; margin-bottom: 5px;">LIVE TOTAL</span>
+                                <div class="total-badge" id="total-${p.id}">0/50</div>
+                            </div>
                         </div>
+
                         <div class="scoring-zone">
                             <div class="score-field">
                                 <span>Innovation</span>
-                                <input type="number" class="score-input" min="0" max="100" value="0">
+                                <input type="number" class="score-input p-input" data-pid="${p.id}" min="0" max="10" value="0">
                             </div>
                             <div class="score-field">
                                 <span>Technical</span>
-                                <input type="number" class="score-input" min="0" max="100" value="0">
+                                <input type="number" class="score-input p-input" data-pid="${p.id}" min="0" max="10" value="0">
                             </div>
-                            <button class="btn-submit" data-id="${p.id}">Submit Score</button>
+                            <div class="score-field">
+                                <span>UI/UX</span>
+                                <input type="number" class="score-input p-input" data-pid="${p.id}" min="0" max="10" value="0">
+                            </div>
+                            <div class="score-field">
+                                <span>Feasibility</span>
+                                <input type="number" class="score-input p-input" data-pid="${p.id}" min="0" max="10" value="0">
+                            </div>
+                            <div class="score-field">
+                                <span>Pitch</span>
+                                <input type="number" class="score-input p-input" data-pid="${p.id}" min="0" max="10" value="0">
+                            </div>
                         </div>
+
+                        <textarea class="feedback-input" id="feedback-${p.id}" placeholder="Enter constructive feedback and suggestions for the team..." rows="3"></textarea>
+
+                        <button class="btn-submit" data-id="${p.id}" style="width: 100%;">Finalize & Submit Score</button>
                     </div>
                 `).join('');
+
+                // Live total sync
+                document.querySelectorAll('.p-input').forEach(input => {
+                    input.oninput = (e) => {
+                        const pid = e.target.dataset.pid;
+                        const cardInputs = document.querySelectorAll(`.p-input[data-pid="${pid}"]`);
+                        let sum = 0;
+                        cardInputs.forEach(i => sum += parseInt(i.value || 0));
+                        document.getElementById(`total-${pid}`).textContent = `${sum}/50`;
+                    };
+                });
 
                 document.querySelectorAll('.btn-submit').forEach(btn => {
                     btn.onclick = async (e) => {
                         const subId = e.currentTarget.dataset.id;
                         const card = e.currentTarget.closest('.eval-card');
 
-                        const scores = card.querySelectorAll('.score-input');
-                        const total = parseInt(scores[0].value) + parseInt(scores[1].value);
+                        const inputs = card.querySelectorAll('.p-input');
+                        const scores = Array.from(inputs).map(i => parseInt(i.value || 0));
+                        const total = scores.reduce((a, b) => a + b, 0);
+                        const feedback = document.getElementById(`feedback-${subId}`).value;
 
-                        e.currentTarget.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+                        e.currentTarget.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Finalizing Results...';
                         e.currentTarget.disabled = true;
 
                         try {
                             await db.updateDocument('submissions', subId, {
                                 status: 'scored',
                                 score: total,
+                                breakdown: scores,
+                                feedback: feedback,
                                 judgedBy: session.uid,
                                 judgedAt: new Date().toISOString()
                             });
 
                             setTimeout(() => {
                                 card.classList.add('animate__animated', 'animate__fadeOutRight');
-                                setTimeout(() => render(), 500);
-                            }, 500);
+                                setTimeout(() => render(), 200);
+                            }, 200);
                         } catch (err) {
                             alert('Failed to save score: ' + err.message);
                             e.currentTarget.disabled = false;

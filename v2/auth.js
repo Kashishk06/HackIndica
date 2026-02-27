@@ -1,6 +1,6 @@
 import { db } from './db.js';
 
-const SESSION_KEY = 'hackmaster_session';
+const SESSION_KEY = 'HackIndica_session';
 
 export function localHash(str) {
     let hash = 0;

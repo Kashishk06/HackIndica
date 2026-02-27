@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hacker Hub | HackMaster PRO</title>
+    <title>Hacker Hub | HackIndica PRO</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -243,12 +243,89 @@
         .toast.show {
             transform: translateY(0);
         }
+
+        .section-tabs {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-mid);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .form-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-mid);
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: white;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .skill-tag {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            margin-right: 5px;
+            margin-bottom: 5px;
+            display: inline-block;
+        }
+
+        .team-meta {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
     </style>
 </head>
 
 <body>
     <div class="sidebar">
-        <h2><i class="fa-solid fa-code"></i> HackMaster<span>HUB</span></h2>
+        <h2><i class="fa-solid fa-code"></i> HackIndica<span>HUB</span></h2>
         <a href="#" class="nav-item active" data-section="explore"><i class="fa-solid fa-rocket"></i> Explore Events</a>
         <a href="#" class="nav-item" data-section="projects"><i class="fa-solid fa-code-branch"></i> My Projects</a>
         <a href="#" class="nav-item" data-section="teams"><i class="fa-solid fa-users"></i> Team Mates</a>
@@ -298,18 +375,60 @@
 
         <!-- Section: Team Mates -->
         <div id="section-teams" class="dashboard-section" style="display: none;">
-            <div class="hackathon-grid" id="teamsList">
-                <!-- Mock teams -->
-                <div class="hack-card">
-                    <div style="display: flex; gap: 10px; margin-bottom: 1rem;">
-                        <img src="https://ui-avatars.com/api/?name=Team+Alpha"
-                            style="width: 50px; border-radius: 12px;">
-                        <div>
-                            <h3>Team Alpha</h3>
-                            <p>3 Members • Active</p>
+            <div class="section-tabs">
+                <button class="tab-btn active" id="btn-my-teams">My Teams</button>
+                <button class="tab-btn" id="btn-find-teams">Find Teammates</button>
+                <button class="tab-btn" id="btn-post-need">Publish Need</button>
+            </div>
+
+            <!-- View: My Teams -->
+            <div id="view-my-teams">
+                <div class="hackathon-grid" id="teamsList">
+                    <!-- Dynamic Teams -->
+                </div>
+            </div>
+
+            <!-- View: Find Teams -->
+            <div id="view-find-teams" style="display: none;">
+                <div class="search-bar">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" id="teamSearchInput" placeholder="Filter by skills or role...">
+                </div>
+                <div class="hackathon-grid" id="recruitmentList">
+                    <!-- Dynamic Recruitment Posts -->
+                </div>
+            </div>
+
+            <!-- View: Post Need -->
+            <div id="view-post-need" style="display: none;">
+                <div class="form-card">
+                    <h2 style="margin-bottom: 1.5rem;">Recruit Teammates</h2>
+                    <form id="publishNeedForm">
+                        <div class="form-group">
+                            <label>For Hackathon</label>
+                            <select id="need-hackId" required>
+                                <!-- Injected from registrations -->
+                            </select>
                         </div>
-                    </div>
-                    <button class="btn btn-primary" style="padding: 0.5rem;">View Chat</button>
+                        <div class="form-group">
+                            <label>Role/Skills Needed (e.g., Frontend, UI/UX, Python)</label>
+                            <input type="text" id="need-skills" placeholder="Comma separated skills" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Gender Preference (Optional)</label>
+                            <select id="need-gender">
+                                <option value="none">No Preference</option>
+                                <option value="female">Female Preferred</option>
+                                <option value="male">Male Preferred</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Short Message</label>
+                            <textarea id="need-message" rows="3"
+                                placeholder="Tell potential teammates about your project idea..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Publish Recruitment Post</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -323,7 +442,7 @@
                             <th style="padding: 1.5rem;">Rank</th>
                             <th>Participant</th>
                             <th>Score</th>
-                            <th>Badges</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody id="leaderboardList">
@@ -437,7 +556,7 @@
                                 b.disabled = true;
                                 showToast();
                                 loadMyProjects(); // Update project count in other section
-                            }, 800);
+                            }, 300);
                         } catch (err) {
                             alert('Failed to register: ' + err.message);
                             b.innerHTML = 'Apply to Hack';
@@ -450,6 +569,7 @@
                 const list = document.getElementById('myProjectsList');
                 const hacks = await db.getCollection('hackathons');
                 const regs = await db.getCollection('registrations');
+                const submissions = await db.getCollection('submissions');
 
                 const myRegs = regs.filter(r => r.userId === session.uid);
                 const myHacks = hacks.filter(h => myRegs.some(r => r.hackId === h.id));
@@ -465,16 +585,35 @@
                     return;
                 }
 
-                list.innerHTML = myHacks.map(h => `
-                    <div class="hack-card animate__animated animate__fadeIn">
-                        <span class="domain-tag">${h.domain}</span>
-                        <h2>${h.name}</h2>
-                        <div class="meta-info" style="margin-bottom: 2rem;">
-                            <span><i class="fa-solid fa-clock"></i> Status: Confirmed</span>
+                list.innerHTML = myHacks.map(h => {
+                    const sub = submissions.find(s => s.hackId === h.id && s.userId === session.uid);
+                    let subStatus = sub ? sub.status : 'not_submitted';
+
+                    return `
+                        <div class="hack-card animate__animated animate__fadeIn">
+                            <span class="domain-tag">${h.domain}</span>
+                            <h2>${h.name}</h2>
+                            
+                            ${subStatus === 'scored' ? `
+                                <div style="background: rgba(16, 185, 129, 0.1); padding: 1.5rem; border-radius: 16px; margin: 1rem 0;">
+                                    <h4 style="color: var(--primary); margin-bottom: 10px;"><i class="fa-solid fa-trophy"></i> Evaluation Complete</h4>
+                                    <div style="font-size: 2rem; font-weight: 800; margin-bottom: 10px;">${sub.score}/50</div>
+                                    <p style="font-size: 0.9rem; font-style: italic; color: var(--text-mid);">"${sub.feedback || 'Great work on the project!'}"</p>
+                                </div>
+                            ` : ''}
+
+                            <div class="meta-info" style="margin-bottom: 2rem;">
+                                <span><i class="fa-solid fa-clock"></i> Status: ${subStatus.replace('_', ' ').toUpperCase()}</span>
+                            </div>
+                            
+                            ${subStatus === 'not_submitted' || subStatus === 'pending' ? `
+                                <button class="btn btn-primary submit-project-btn" data-id="${h.id}" ${subStatus === 'pending' ? 'disabled' : ''}>
+                                    ${subStatus === 'pending' ? 'Pending Review' : 'Submit Project'}
+                                </button>
+                            ` : '<button class="btn btn-outline" disabled>Evaluation Finalized</button>'}
                         </div>
-                        <button class="btn btn-primary submit-project-btn" data-id="${h.id}">Submit Project</button>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
 
                 document.querySelectorAll('.submit-project-btn').forEach(btn => {
                     btn.onclick = async (e) => {
@@ -502,7 +641,7 @@
                                 e.currentTarget.innerHTML = '<i class="fa-solid fa-check"></i> Project Submitted';
                                 e.currentTarget.style.background = '#0ea5e9';
                                 alert(`Success! Your project "${projectTitle}" has been queued for judging.`);
-                            }, 1000);
+                            }, 300);
                         } catch (err) {
                             alert('Submission failed: ' + err.message);
                             e.currentTarget.disabled = false;
@@ -511,25 +650,38 @@
                 });
             }
 
-            function renderLeaderboard() {
+            async function renderLeaderboard() {
                 const list = document.getElementById('leaderboardList');
-                const mockRanks = [
-                    { name: 'Arjun Mehta', score: 2450, badges: 5 },
-                    { name: 'Sneha Rao', score: 2100, badges: 4 },
-                    { name: 'Vikram Seth', score: 1850, badges: 3 },
-                    { name: 'Ananya Iyer', score: 1600, badges: 3 }
-                ];
-                list.innerHTML = mockRanks.map((r, i) => `
-                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                const submissions = await db.getCollection('submissions');
+
+                // Get only scored submissions and sort by score
+                const scored = submissions
+                    .filter(s => s.status === 'scored')
+                    .sort((a, b) => b.score - a.score);
+
+                if (scored.length === 0) {
+                    list.innerHTML = `<tr><td colspan="4" style="padding: 3rem; text-align: center; color: var(--text-mid);">No projects have been evaluated yet. Rankings will appear here soon!</td></tr>`;
+                    return;
+                }
+
+                list.innerHTML = scored.map((s, i) => `
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);" class="animate__animated animate__fadeInUp">
                         <td style="padding: 1.5rem; font-weight: 800; color: var(--primary);">#${i + 1}</td>
                         <td style="padding: 1.5rem;">
                             <div style="display: flex; align-items: center; gap: 10px;">
-                                <img src="https://ui-avatars.com/api/?name=${r.name}" style="width: 30px; border-radius: 50%;">
-                                ${r.name}
+                                <img src="https://ui-avatars.com/api/?name=${s.userName}&background=random" style="width: 30px; border-radius: 50%;">
+                                <div>
+                                    <strong>${s.userName}</strong><br>
+                                    <small style="color: var(--text-mid)">Project: ${s.projectTitle}</small>
+                                </div>
                             </div>
                         </td>
-                        <td style="padding: 1.5rem; font-family: monospace; font-weight: 700;">${r.score.toLocaleString()} XP</td>
-                        <td style="padding: 1.5rem; color: #facc15;"><i class="fa-solid fa-medal"></i> ×${r.badges}</td>
+                        <td style="padding: 1.5rem; font-family: monospace; font-weight: 700;">
+                            <span style="font-size: 1.2rem; color: white;">${s.score}</span>/50
+                        </td>
+                        <td style="padding: 1.5rem;">
+                            <span class="status-badge" style="background: rgba(16,185,129,0.1); color: var(--primary); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem;">VERIFIED</span>
+                        </td>
                     </tr>
                 `).join('');
             }
@@ -540,12 +692,174 @@
                 setTimeout(() => toast.classList.remove('show'), 3000);
             }
 
+            // ── Team Matchmaking Logic ──
+            const teamViewBtns = {
+                'btn-my-teams': 'view-my-teams',
+                'btn-find-teams': 'view-find-teams',
+                'btn-post-need': 'view-post-need'
+            };
+
+            Object.keys(teamViewBtns).forEach(btnId => {
+                document.getElementById(btnId).onclick = (e) => {
+                    Object.keys(teamViewBtns).forEach(id => {
+                        document.getElementById(id).classList.remove('active');
+                        document.getElementById(teamViewBtns[id]).style.display = 'none';
+                    });
+                    document.getElementById(btnId).classList.add('active');
+                    document.getElementById(teamViewBtns[btnId]).style.display = 'block';
+
+                    if (btnId === 'btn-find-teams') renderRecruitments();
+                    if (btnId === 'btn-post-need') preparePostNeed();
+                };
+            });
+
+            async function preparePostNeed() {
+                const select = document.getElementById('need-hackId');
+                const hacks = await db.getCollection('hackathons');
+                const regs = await db.getCollection('registrations');
+                const myRegs = regs.filter(r => r.userId === session.uid);
+
+                if (myRegs.length === 0) {
+                    select.innerHTML = '<option disabled>Please register for a hackathon first</option>';
+                    return;
+                }
+
+                select.innerHTML = myRegs.map(r => {
+                    const h = hacks.find(h => h.id === r.hackId);
+                    return `<option value="${h.id}">${h.name}</option>`;
+                }).join('');
+            }
+
+            document.getElementById('publishNeedForm').onsubmit = async (e) => {
+                e.preventDefault();
+                const btn = e.target.querySelector('button');
+                btn.disabled = true;
+                btn.textContent = 'Publishing...';
+
+                try {
+                    await db.addDocument('team_recruitments', {
+                        userId: session.uid,
+                        userName: session.name,
+                        hackId: document.getElementById('need-hackId').value,
+                        skills: document.getElementById('need-skills').value.split(',').map(s => s.trim()),
+                        gender: document.getElementById('need-gender').value,
+                        message: document.getElementById('need-message').value,
+                        status: 'open'
+                    });
+
+                    setTimeout(() => {
+                        alert('Your recruitment post is now live!');
+                        e.target.reset();
+                        btn.disabled = false;
+                        btn.textContent = 'Publish Recruitment Post';
+                        document.getElementById('btn-find-teams').click();
+                    }, 300);
+                } catch (err) {
+                    alert('Error: ' + err.message);
+                    btn.disabled = false;
+                }
+            };
+
+            async function renderRecruitments(filter = '') {
+                const list = document.getElementById('recruitmentList');
+                const recruitments = await db.getCollection('team_recruitments');
+                const hacks = await db.getCollection('hackathons');
+                const requests = await db.getCollection('join_requests') || [];
+
+                const filtered = recruitments.filter(r =>
+                    r.status === 'open' &&
+                    (r.skills.some(s => s.toLowerCase().includes(filter.toLowerCase())) ||
+                        r.userName.toLowerCase().includes(filter.toLowerCase()))
+                );
+
+                if (filtered.length === 0) {
+                    list.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-lo); padding: 3rem;">No active recruitments found. Be the first to post!</div>';
+                    return;
+                }
+
+                list.innerHTML = filtered.map(r => {
+                    const hackName = hacks.find(h => h.id === r.hackId)?.name || 'Unknown Hackathon';
+                    const hasRequested = requests.some(req => req.recruitmentId === r.id && req.userId === session.uid);
+
+                    return `
+                        <div class="hack-card animate__animated animate__fadeIn">
+                            <div style="display: flex; gap: 10px; margin-bottom: 1rem; align-items: flex-start;">
+                                <img src="https://ui-avatars.com/api/?name=${r.userName}&background=10b981&color=fff" style="width: 40px; border-radius: 10px;">
+                                <div style="flex: 1;">
+                                    <h3 style="font-size: 1rem;">${r.userName} is looking for...</h3>
+                                    <small style="color: var(--primary);">${hackName}</small>
+                                </div>
+                            </div>
+                            
+                            <p style="font-size: 0.85rem; line-height: 1.4; margin-bottom: 1rem;">"${r.message}"</p>
+                            
+                            <div style="margin-bottom: 1rem;">
+                                ${r.skills.map(s => `<span class="skill-tag">${s}</span>`).join('')}
+                                ${r.gender !== 'none' ? `<span class="skill-tag" style="background: rgba(244, 63, 94, 0.1); color: #f43f5e;">Prefers: ${r.gender}</span>` : ''}
+                            </div>
+
+                            <button class="btn ${hasRequested ? 'btn-outline' : 'btn-primary'} join-req-btn" 
+                                    data-id="${r.id}" ${hasRequested ? 'disabled' : ''}>
+                                ${hasRequested ? 'Request Sent' : 'Request to Join'}
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+
+                document.querySelectorAll('.join-req-btn').forEach(btn => {
+                    btn.onclick = async (e) => {
+                        const b = e.currentTarget;
+                        const rid = b.dataset.id;
+                        b.disabled = true;
+                        b.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
+
+                        try {
+                            await db.addDocument('join_requests', {
+                                recruitmentId: rid,
+                                userId: session.uid,
+                                userName: session.name,
+                                status: 'pending'
+                            });
+
+                            setTimeout(() => {
+                                b.innerHTML = 'Request Sent';
+                                b.classList.replace('btn-primary', 'btn-outline');
+                                alert('Success! The team lead has been notified of your interest.');
+                            }, 300);
+                        } catch (err) {
+                            alert('Error: ' + err.message);
+                            b.disabled = false;
+                        }
+                    };
+                });
+            }
+
+            document.getElementById('teamSearchInput').oninput = (e) => renderRecruitments(e.target.value);
             document.getElementById('searchInput').oninput = (e) => renderHacks(e.target.value);
             document.getElementById('logoutBtn').onclick = () => logout();
 
             // Initial loads
             renderHacks();
             loadMyProjects();
+            renderRecruitments();
+            renderMyTeams();
+        }
+
+        async function renderMyTeams() {
+            const list = document.getElementById('teamsList');
+            // Mock for now, could be derived from 'teams' collection if added
+            list.innerHTML = `
+                <div class="hack-card">
+                    <div style="display: flex; gap: 10px; margin-bottom: 1rem;">
+                        <img src="https://ui-avatars.com/api/?name=Team+Alpha&background=10b981&color=fff" style="width: 50px; border-radius: 12px;">
+                        <div>
+                            <h3>Team Alpha</h3>
+                            <p>3 Members • Active</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" style="padding: 0.5rem;">View Chat</button>
+                </div>
+            `;
         }
     </script>
 </body>

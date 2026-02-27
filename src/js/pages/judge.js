@@ -182,7 +182,7 @@ window.openScoring = async (hackathonId) => {
         });
 
         const session = JSON.parse(
-          sessionStorage.getItem("hackmaster_session") || "{}",
+          sessionStorage.getItem("HackIndica_session") || "{}",
         );
 
         try {

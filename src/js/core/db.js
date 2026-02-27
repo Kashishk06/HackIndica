@@ -3,7 +3,7 @@
  * Provides a Firestore-like API:  db.collection(name).add/set/get/where/orderBy/limit etc.
  */
 
-const DB_PREFIX = "hackmaster_";
+const DB_PREFIX = "HackIndica_";
 
 function generateId() {
   return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
@@ -204,7 +204,7 @@ export const Timestamp = {
 (function seedDatabase() {
   const hacKeys = Object.keys(getCollection("hackathons"));
   if (hacKeys.length === 0) {
-    console.log("[HackMaster] Seeding 10 Indian Hackathons...");
+    console.log("[HackIndica] Seeding 10 Indian Hackathons...");
 
     const hackathons = [
       {
@@ -390,7 +390,7 @@ export const Timestamp = {
   // ── Seed Users ─────────────────────────────────────────────────────────────
   const userKeys = Object.keys(getCollection("users"));
   if (userKeys.length === 0) {
-    console.log("[HackMaster] Seeding default test accounts...");
+    console.log("[HackIndica] Seeding default test accounts...");
 
     function localHash(str) {
       let hash = 0;
@@ -406,7 +406,7 @@ export const Timestamp = {
       superadmin: {
         uid: "user_superadmin",
         name: "Super Admin",
-        email: "superadmin@hackmaster.com",
+        email: "superadmin@HackIndica.com",
         role: "superadmin",
         passwordHash: testPassword,
         isActive: true,
@@ -414,7 +414,7 @@ export const Timestamp = {
       organizer: {
         uid: "user_org",
         name: "Dev Organizer",
-        email: "org@hackmaster.com",
+        email: "org@HackIndica.com",
         role: "organizer",
         passwordHash: testPassword,
         isActive: true,
@@ -422,7 +422,7 @@ export const Timestamp = {
       participant: {
         uid: "user_part",
         name: "Elite Hacker",
-        email: "part@hackmaster.com",
+        email: "part@HackIndica.com",
         role: "participant",
         passwordHash: testPassword,
         isActive: true,
@@ -430,7 +430,7 @@ export const Timestamp = {
       judge: {
         uid: "user_judge",
         name: "Expert Judge",
-        email: "judge@hackmaster.com",
+        email: "judge@HackIndica.com",
         role: "judge",
         passwordHash: testPassword,
         isActive: true,
