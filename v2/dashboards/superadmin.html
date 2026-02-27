@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperAdmin Console | HackMaster PRO</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <style>
+        :root {
+            --primary: #f59e0b;
+            --bg: #07080f;
+            --surface: #0e1020;
+            --text-hi: #f8fafc;
+            --text-mid: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+            --sidebar-w: 260px;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-hi);
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            display: flex;
+        }
+
+        .sidebar {
+            width: var(--sidebar-w);
+            height: 100vh;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+        }
+
+        .sidebar h2 {
+            font-size: 1.2rem;
+            margin-bottom: 2.5rem;
+            color: var(--primary);
+            font-weight: 800;
+        }
+
+        .nav-item {
+            padding: 0.9rem 1.2rem;
+            border-radius: 12px;
+            color: var(--text-mid);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 0.5rem;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: rgba(245, 158, 11, 0.1);
+            color: white;
+        }
+
+        .nav-item.active {
+            border-left: 4px solid var(--primary);
+            background: linear-gradient(90deg, rgba(245, 158, 11, 0.1), transparent);
+        }
+
+        .logout-btn {
+            margin-top: auto;
+            color: #f43f5e;
+            cursor: pointer;
+        }
+
+        main {
+            margin-left: var(--sidebar-w);
+            padding: 3rem 5%;
+            width: calc(100% - var(--sidebar-w));
+            box-sizing: border-box;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .content-area {
+            background: var(--surface);
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            padding: 2rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th {
+            text-align: left;
+            color: var(--text-mid);
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <h2><i class="fa-solid fa-shield-halved"></i> HackMaster<span>ADMIN</span></h2>
+        <a href="#" class="nav-item active" data-section="dash"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+        <a href="#" class="nav-item" data-section="users"><i class="fa-solid fa-users"></i> Users</a>
+        <a href="#" class="nav-item" data-section="hacks"><i class="fa-solid fa-trophy"></i> Hackathons</a>
+        <a href="#" class="nav-item" data-section="settings"><i class="fa-solid fa-cog"></i> Settings</a>
+        <a href="#" class="nav-item logout-btn" id="logoutBtn"><i class="fa-solid fa-sign-out"></i> Logout</a>
+    </div>
+
+    <main class="animate__animated animate__fadeIn">
+        <div class="header">
+            <div>
+                <h1 id="sectionTitle">Global Overview</h1>
+                <p id="sectionSubtext" style="color: var(--text-mid)">Real-time system health and user analytics.</p>
+            </div>
+            <div
+                style="background: var(--surface); padding: 10px 20px; border-radius: 99px; border: 1px solid var(--border);">
+                <strong id="adminName">SuperAdmin</strong>
+            </div>
+        </div>
+
+        <div id="section-dash" class="dashboard-section active">
+            <div class="stats-grid">
+                <div class="stat-card"><span>Total Users</span>
+                    <h2 id="totalUsers">0</h2>
+                </div>
+                <div class="stat-card"><span>Active Hacks</span>
+                    <h2 id="totalHacks">0</h2>
+                </div>
+                <div class="stat-card"><span>Revenue</span>
+                    <h2>₹45.2K</h2>
+                </div>
+                <div class="stat-card"><span>Uptime</span>
+                    <h2 style="color: #10b981;">99.9%</h2>
+                </div>
+            </div>
+            <div class="content-area">
+                <h3>System Logs</h3>
+                <div id="logs"
+                    style="font-family: monospace; font-size: 0.85rem; color: #10b981; margin-top: 1rem; line-height: 1.6;">
+                    [INFO] Database initialized successfully<br>
+                    [AUTH] New user registration: mukesh@gmail.com<br>
+                    [WARN] Potential brute force detected on port 8080 (Blocked)
+                </div>
+            </div>
+        </div>
+
+        <div id="section-users" class="dashboard-section" style="display: none;">
+            <div class="content-area">
+                <h3>User Management</h3>
+                <table id="userTable">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userList"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="section-hacks" class="dashboard-section" style="display: none;">
+            <div class="content-area">
+                <h3>Global Hackathons</h3>
+                <table id="hacksTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Organizer</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="globalHacksList"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { requireAuth, logout } from '../auth.js';
+        import { db } from '../db.js';
+
+        const session = requireAuth(['superadmin']);
+        if (session) {
+            document.getElementById('adminName').textContent = session.name;
+
+            const navItems = document.querySelectorAll('.nav-item[data-section]');
+            const sections = document.querySelectorAll('.dashboard-section');
+            const title = document.getElementById('sectionTitle');
+            const subtext = document.getElementById('sectionSubtext');
+
+            const sectionMeta = {
+                dash: ["Global Overview", "Real-time system health and user analytics."],
+                users: ["User Management", "Control access and roles across the platform."],
+                hacks: ["Global Hackathons", "Monitor and moderate all events."],
+                settings: ["System Settings", "Configure global parameters and security."]
+            };
+
+            navItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const target = item.dataset.section;
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    item.classList.add('active');
+                    sections.forEach(sec => sec.style.display = 'none');
+                    document.getElementById(`section-${target}`).style.display = 'block';
+                    title.textContent = sectionMeta[target][0];
+                    subtext.textContent = sectionMeta[target][1];
+                    if (target === 'users') loadUsers();
+                    if (target === 'hacks') loadGlobalHacks();
+                });
+            });
+
+            async function init() {
+                const users = await db.getCollection('users');
+                const hacks = await db.getCollection('hackathons');
+                const regs = await db.getCollection('registrations');
+                const subs = await db.getCollection('submissions');
+
+                document.getElementById('totalUsers').textContent = users.length;
+                document.getElementById('totalHacks').textContent = hacks.length;
+
+                // Build Real Logs
+                const logPanel = document.getElementById('logs');
+                const allActivity = [
+                    ...regs.map(r => `[REG] User ${r.userName} joined ${hacks.find(h => h.id === r.hackId)?.name || 'Event'}`),
+                    ...subs.map(s => `[SUB] Project "${s.projectTitle}" submitted by ${s.userName}`),
+                    ...hacks.map(h => `[HACK] New Event "${h.name}" launched`)
+                ].slice(-5).reverse();
+
+                if (allActivity.length > 0) {
+                    logPanel.innerHTML = allActivity.map(l => `<div style="margin-bottom: 5px;">${l}</div>`).join('');
+                }
+            }
+
+            async function loadUsers() {
+                const users = await db.getCollection('users');
+                document.getElementById('userList').innerHTML = users.map(u => `
+                    <tr>
+                        <td><strong>${u.name}</strong></td>
+                        <td>${u.email}</td>
+                        <td><span style="color: var(--primary)">${u.role.toUpperCase()}</span></td>
+                        <td><button class="btn btn-primary" style="padding: 5px 10px; font-size: 0.7rem;">Suspend</button></td>
+                    </tr>
+                `).join('');
+            }
+
+            async function loadGlobalHacks() {
+                const hacks = await db.getCollection('hackathons');
+                document.getElementById('globalHacksList').innerHTML = hacks.map(h => `
+                    <tr>
+                        <td><strong>${h.name}</strong></td>
+                        <td>${h.organizerName || 'External'}</td>
+                        <td><span style="color: #10b981;">ACTIVE</span></td>
+                        <td><button class="btn btn-primary" style="padding: 5px 10px; font-size: 0.7rem;">Moderate</button></td>
+                    </tr>
+                `).join('');
+            }
+
+            document.getElementById('logoutBtn').onclick = () => logout();
+            init();
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizer Dashboard | HackMaster PRO</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.4);
+            --bg: #07080f;
+            --surface: #0e1020;
+            --surface-hover: #161929;
+            --text-hi: #f8fafc;
+            --text-mid: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+            --sidebar-w: 260px;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-hi);
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            display: flex;
+            overflow-x: hidden;
+        }
+
+        /* ── Sidebar ── */
+        .sidebar {
+            width: var(--sidebar-w);
+            height: 100vh;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            transition: 0.3s;
+        }
+
+        .sidebar h2 {
+            font-size: 1.2rem;
+            margin-bottom: 2.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+        }
+
+        .sidebar h2 span {
+            color: var(--primary);
+        }
+
+        .nav-item {
+            padding: 0.9rem 1.2rem;
+            border-radius: 12px;
+            color: var(--text-mid);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: rgba(99, 102, 241, 0.1);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.15), transparent);
+            border-left: 4px solid var(--primary);
+        }
+
+        .logout-btn {
+            margin-top: auto;
+            color: #f43f5e;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .logout-btn:hover {
+            border-color: rgba(244, 63, 94, 0.2);
+            background: rgba(244, 63, 94, 0.05);
+        }
+
+        /* ── Main Content ── */
+        main {
+            margin-left: var(--sidebar-w);
+            padding: 3rem 5%;
+            width: calc(100% - var(--sidebar-w));
+            box-sizing: border-box;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3.5rem;
+        }
+
+        .user-pill {
+            background: var(--surface);
+            padding: 8px 20px;
+            border-radius: 99px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid var(--border);
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .user-pill:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .user-pill img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--surface), rgba(14, 16, 32, 0.5));
+            padding: 2rem;
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            transition: 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .stat-card span {
+            font-size: 0.85rem;
+            color: var(--text-mid);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        .stat-card h3 {
+            font-size: 2.2rem;
+            margin: 10px 0;
+            font-weight: 800;
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, var(--primary-glow), transparent 70%);
+            opacity: 0.2;
+        }
+
+        .content-area {
+            background: var(--surface);
+            border-radius: 28px;
+            border: 1px solid var(--border);
+            padding: 2.5rem;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            color: var(--text-mid);
+            padding: 1.2rem 1rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 1.5rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px var(--primary-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px var(--primary-glow);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: white;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--text-mid);
+        }
+
+        .btn-icon {
+            padding: 10px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-mid);
+            border: 1px solid var(--border);
+        }
+
+        .btn-icon:hover {
+            color: white;
+            border-color: var(--primary);
+            background: var(--primary-glow);
+        }
+
+        .btn-danger {
+            color: #f43f5e;
+            background: rgba(244, 63, 94, 0.1);
+            border: 1px solid rgba(244, 63, 94, 0.2);
+        }
+
+        .btn-danger:hover {
+            background: #f43f5e;
+            color: white;
+        }
+
+        /* ── Modal ── */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 3rem;
+            border-radius: 32px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal h2 {
+            margin-bottom: 1.5rem;
+            font-weight: 800;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-mid);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem 1.2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <h2><i class="fa-solid fa-bolt-lightning"></i> HackMaster<span>ORG</span></h2>
+        <a href="#" class="nav-item active" data-section="overview"><i class="fa-solid fa-chart-pie"></i> Overview</a>
+        <a href="#" class="nav-item" data-section="events"><i class="fa-solid fa-calendar-check"></i> My Events</a>
+        <a href="#" class="nav-item" data-section="participants"><i class="fa-solid fa-users-viewfinder"></i>
+            Participants</a>
+        <a href="#" class="nav-item" data-section="notifications"><i class="fa-solid fa-envelope-open-text"></i>
+            Notifications</a>
+        <a href="#" class="nav-item" data-section="settings"><i class="fa-solid fa-gear"></i> Settings</a>
+        <a href="#" class="nav-item logout-btn" id="logoutBtn"><i class="fa-solid fa-arrow-right-from-bracket"></i>
+            Logout</a>
+    </div>
+
+    <main class="animate__animated animate__fadeIn">
+        <div class="header">
+            <div>
+                <h1 id="welcomeText" class="animate__animated animate__slideInLeft">Organizer Dashboard</h1>
+                <p id="sectionSubtext" style="color: var(--text-mid);"
+                    class="animate__animated animate__slideInLeft animate__delay-1s">Ready to orchestrate innovation?
+                </p>
+            </div>
+            <div class="user-pill animate__animated animate__slideInRight">
+                <div style="text-align: right; margin-right: 15px;">
+                    <strong id="userName">...</strong><br>
+                    <small style="color: var(--text-mid); font-size: 0.7rem;">Verified Organizer</small>
+                </div>
+                <img src="https://ui-avatars.com/api/?background=6366f1&color=fff&name=O" id="userAvatar">
+            </div>
+        </div>
+
+        <!-- Section: Overview -->
+        <div id="section-overview" class="dashboard-section active">
+            <div class="stats-grid">
+                <div class="stat-card animate__animated animate__fadeInUp animate__delay-1s">
+                    <span>Total Events</span>
+                    <h3 id="statTotalEvents">00</h3>
+                </div>
+                <div class="stat-card animate__animated animate__fadeInUp animate__delay-1s"
+                    style="border-bottom: 3px solid var(--primary);">
+                    <span>Total Registrations</span>
+                    <h3 id="statTotalRegs">0</h3>
+                </div>
+                <div class="stat-card animate__animated animate__fadeInUp animate__delay-1s">
+                    <span>Submissions</span>
+                    <h3 id="statSubmissionRate">0%</h3>
+                </div>
+                <div class="stat-card animate__animated animate__fadeInUp animate__delay-1s">
+                    <span>System Status</span>
+                    <h3 style="color: #10b981; font-size: 1.5rem;"><i class="fa-solid fa-circle-check"></i> OPTIMAL</h3>
+                </div>
+            </div>
+
+            <div class="content-area animate__animated animate__fadeInUp animate__delay-2s">
+                <div class="section-top">
+                    <h2>Active Hackathons</h2>
+                    <div style="display: flex; gap: 12px;">
+                        <button class="btn btn-outline" id="refreshBtn"><i class="fa-solid fa-sync"></i> Sync
+                            Data</button>
+                        <button class="btn btn-primary" id="openModalBtn"><i class="fa-solid fa-plus-circle"></i> Create
+                            New</button>
+                    </div>
+                </div>
+                <table id="hackathonTable">
+                    <thead>
+                        <tr>
+                            <th>Hackathon Details</th>
+                            <th>Domain</th>
+                            <th>Status</th>
+                            <th>Metrics</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="hackathonList">
+                        <!-- Dynamic Data -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Section: My Events (Filtered) -->
+        <div id="section-events" class="dashboard-section" style="display: none;">
+            <div class="content-area">
+                <div class="section-top">
+                    <h2>Manage My Created Events</h2>
+                    <button class="btn btn-primary" id="openModalBtn2"><i class="fa-solid fa-plus"></i> Launch
+                        New</button>
+                </div>
+                <div id="myEventsList" class="hackathon-list" style="display: grid; gap: 1rem;">
+                    <!-- Filtered hacks here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Participants -->
+        <div id="section-participants" class="dashboard-section" style="display: none;">
+            <div class="content-area">
+                <h2>Event Participants</h2>
+                <p style="color: var(--text-mid); margin-bottom: 2rem;">Overview of all hackers registered for your
+                    events.</p>
+                <div id="participantsList" style="display: grid; gap: 1rem;">
+                    <!-- Mock participant list -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Notifications -->
+        <div id="section-notifications" class="dashboard-section" style="display: none;">
+            <div class="content-area">
+                <h2>System Notifications</h2>
+                <div id="notifList" style="display: grid; gap: 1rem; margin-top: 1.5rem;">
+                    <div class="stat-card" style="padding: 1rem;">
+                        <strong style="color: var(--primary);">System Update</strong>
+                        <p style="font-size: 0.9rem; margin-top: 5px;">HackMaster v2 engine is now live with real-time
+                            JSON sync.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Settings -->
+        <div id="section-settings" class="dashboard-section" style="display: none;">
+            <div class="content-area" style="max-width: 600px;">
+                <h2>Profile Settings</h2>
+                <form id="settingsForm" style="margin-top: 2rem;">
+                    <div class="form-group">
+                        <label>Display Name</label>
+                        <input type="text" id="set-name" value="">
+                    </div>
+                    <div class="form-group">
+                        <label>Bio / Description</label>
+                        <input type="text" id="set-bio" placeholder="Professional Hackathon Organizer">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Create Hackathon Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal animate__animated animate__zoomIn">
+            <h2>Launch New Event</h2>
+            <form id="createHackathonForm">
+                <div class="form-group">
+                    <label>Event Name</label>
+                    <input type="text" id="h-name" placeholder="e.g. AI Innovation Hub" required>
+                </div>
+                <div class="form-group">
+                    <label>Technology Domain</label>
+                    <select id="h-domain">
+                        <option value="ai-ml">Artificial Intelligence</option>
+                        <option value="web3">Web3 & Blockchain</option>
+                        <option value="open">Open Innovation</option>
+                        <option value="fintech">FinTech</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Location / Mode</label>
+                    <input type="text" id="h-loc" placeholder="Virtual or City Name" required>
+                </div>
+                <div style="display: flex; gap: 12px; margin-top: 2rem;">
+                    <button type="button" class="btn btn-outline" style="flex: 1;" id="closeModalBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="flex: 2;">Launch Hackathon</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { requireAuth, logout } from '../auth.js';
+        import { db } from '../db.js';
+
+        const session = requireAuth(['organizer', 'superadmin']);
+        const modal = document.getElementById('modalOverlay');
+
+        if (session) {
+            document.getElementById('userName').textContent = session.name;
+            document.getElementById('welcomeText').textContent = `Welcome, ${session.name.split(' ')[0]} 👋`;
+            document.getElementById('userAvatar').src = `https://ui-avatars.com/api/?background=6366f1&color=fff&name=${session.name}`;
+            document.getElementById('set-name').value = session.name;
+
+            // ── SPA Section Switching Logic ──
+            const navItems = document.querySelectorAll('.nav-item[data-section]');
+            const sections = document.querySelectorAll('.dashboard-section');
+            const subtext = document.getElementById('sectionSubtext');
+
+            const sectionMeta = {
+                overview: "Ready to orchestrate innovation?",
+                events: "High-level overview of your created hackathons.",
+                participants: "Track and manage hackers across all your events.",
+                notifications: "Stay updated with system and event alerts.",
+                settings: "Customize your organizer profile and preferences."
+            };
+
+            navItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const target = item.dataset.section;
+
+                    // Update UI
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    item.classList.add('active');
+
+                    sections.forEach(sec => sec.style.display = 'none');
+                    document.getElementById(`section-${target}`).style.display = 'block';
+
+                    subtext.textContent = sectionMeta[target];
+
+                    // Specific logic for sections
+                    if (target === 'events') renderMyEvents();
+                    if (target === 'participants') renderParticipants();
+                });
+            });
+
+            async function loadData() {
+                const list = document.getElementById('hackathonList');
+                const hacks = await db.getCollection('hackathons');
+                const regs = await db.getCollection('registrations');
+
+                // Update Global Stats
+                document.getElementById('statTotalEvents').textContent = hacks.length.toString().padStart(2, '0');
+                document.getElementById('statTotalRegs').textContent = regs.length.toLocaleString();
+                document.getElementById('statSubmissionRate').textContent = hacks.length > 0 ? "100%" : "0%";
+
+                list.innerHTML = hacks.map(h => {
+                    const hackRegs = regs.filter(r => r.hackId === h.id);
+                    return `
+                        <tr class="animate__animated animate__fadeIn">
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <div style="width: 40px; height: 40px; border-radius: 10px; background: var(--primary-glow); display: flex; align-items: center; justify-content: center; color: var(--primary);">
+                                        <i class="fa-solid fa-code"></i>
+                                    </div>
+                                    <div>
+                                        <strong style="font-size: 1.1rem; color: #fff;">${h.name}</strong><br>
+                                        <small style="color: var(--text-mid)"><i class="fa-solid fa-location-arrow"></i> ${h.location}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span style="padding: 4px 10px; border-radius: 6px; background: rgba(255,255,255,0.05); font-size: 0.8rem; text-transform: uppercase; font-weight: 700;">${h.domain}</span></td>
+                            <td><span style="color: #10b981; font-weight: 600;"><i class="fa-solid fa-circle" style="font-size: 0.6rem;"></i> Live</span></td>
+                            <td>
+                                <div style="font-size: 0.85rem;">
+                                    <i class="fa-solid fa-user-group" style="color: var(--primary)"></i> ${hackRegs.length} registered
+                                </div>
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn-icon" title="Manage"><i class="fa-solid fa-pen-to-square"></i></button>
+                                    <button class="btn-icon btn-danger" data-id="${h.id}"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+                // Attach Delete Handlers
+                document.querySelectorAll('.btn-danger').forEach(btn => {
+                    btn.onclick = async (e) => {
+                        if (confirm('Delete this hackathon permanently?')) {
+                            await db.deleteDocument('hackathons', e.currentTarget.dataset.id);
+                            loadData();
+                        }
+                    };
+                });
+            }
+
+            async function renderMyEvents() {
+                const myEvents = document.getElementById('myEventsList');
+                const hacks = await db.getCollection('hackathons');
+                // Normally filter by session.uid, but for demo we show all
+                myEvents.innerHTML = hacks.map(h => `
+                    <div class="stat-card" style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem;">
+                        <div>
+                            <strong style="font-size: 1.2rem;">${h.name}</strong>
+                            <p style="color: var(--text-mid); font-size: 0.9rem;">${h.domain.toUpperCase()} | ${h.location}</p>
+                        </div>
+                        <button class="btn btn-outline">Edit Event</button>
+                    </div>
+                `).join('');
+            }
+
+            async function renderParticipants() {
+                const pList = document.getElementById('participantsList');
+                const regs = await db.getCollection('registrations');
+                const hacks = await db.getCollection('hackathons');
+
+                if (regs.length === 0) {
+                    pList.innerHTML = '<div style="text-align: center; color: var(--text-mid); padding: 3rem;">No participants have registered yet.</div>';
+                    return;
+                }
+
+                pList.innerHTML = regs.map(r => {
+                    const hackName = hacks.find(h => h.id === r.hackId)?.name || 'Unknown Event';
+                    return `
+                        <div class="stat-card" style="display: flex; gap: 15px; align-items: center; padding: 1rem;">
+                            <img src="https://ui-avatars.com/api/?name=${r.userName}" style="width: 40px; border-radius: 50%;">
+                            <div style="flex: 1;">
+                                <strong>${r.userName}</strong><br>
+                                <small style="color: var(--text-mid)">${r.userEmail}</small>
+                            </div>
+                            <span class="status-badge" style="background: rgba(99,102,241,0.1); color: var(--primary); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem;">${hackName}</span>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // Modal Controls
+            document.getElementById('openModalBtn').onclick = () => modal.style.display = 'flex';
+            document.getElementById('openModalBtn2').onclick = () => modal.style.display = 'flex';
+            document.getElementById('closeModalBtn').onclick = () => modal.style.display = 'none';
+
+            document.getElementById('createHackathonForm').onsubmit = async (e) => {
+                e.preventDefault();
+                const newHack = {
+                    name: document.getElementById('h-name').value,
+                    domain: document.getElementById('h-domain').value,
+                    location: document.getElementById('h-loc').value,
+                    organizerId: session.uid,
+                    status: 'active'
+                };
+                await db.addDocument('hackathons', newHack);
+                modal.style.display = 'none';
+                e.target.reset();
+                loadData();
+                renderMyEvents();
+            };
+
+            document.getElementById('settingsForm').onsubmit = (e) => {
+                e.preventDefault();
+                alert('Settings saved successfully!');
+            };
+
+            document.getElementById('refreshBtn').onclick = () => loadData();
+            document.getElementById('logoutBtn').onclick = () => logout();
+
+            loadData();
+        }
+    </script>
+</body>
+
+</html>

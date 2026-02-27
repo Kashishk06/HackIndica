@@ -1,0 +1,90 @@
+/* HackMaster Pro – Keyframe animations (imported by other CSS via style.css) */
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(.92);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Page entrance */
+.fade-in {
+    animation: fadeIn .5s var(--ease) both;
+}
+
+.slide-up {
+    animation: slideUp .5s var(--ease) both;
+}
+
+.scale-in {
+    animation: scaleIn .4s var(--ease-back) both;
+}
+
+/* Stagger helpers */
+.delay-1 {
+    animation-delay: .08s;
+}
+
+.delay-2 {
+    animation-delay: .16s;
+}
+
+.delay-3 {
+    animation-delay: .24s;
+}
+
+.delay-4 {
+    animation-delay: .32s;
+}
+
+.delay-5 {
+    animation-delay: .40s;
+}
+
+/* Loading spinner */
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--c-border-hi);
+    border-top-color: var(--c-violet);
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+    display: inline-block;
+}

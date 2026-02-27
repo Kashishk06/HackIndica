@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expert Review Panel | HackMaster PRO</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <style>
+        :root {
+            --primary: #f43f5e;
+            --primary-glow: rgba(244, 63, 94, 0.3);
+            --bg: #07080f;
+            --surface: #0e1020;
+            --text-hi: #f8fafc;
+            --text-mid: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+            --sidebar-w: 260px;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-hi);
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            display: flex;
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            width: var(--sidebar-w);
+            height: 100vh;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+        }
+
+        .sidebar h2 {
+            font-size: 1.2rem;
+            margin-bottom: 2.5rem;
+            color: var(--primary);
+            font-weight: 800;
+        }
+
+        .nav-item {
+            padding: 0.9rem 1.2rem;
+            border-radius: 12px;
+            color: var(--text-mid);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 0.5rem;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: rgba(244, 63, 94, 0.1);
+            color: white;
+        }
+
+        .nav-item.active {
+            border-left: 4px solid var(--primary);
+            background: linear-gradient(90deg, rgba(244, 63, 94, 0.1), transparent);
+        }
+
+        .logout-btn {
+            margin-top: auto;
+            color: #f43f5e;
+            cursor: pointer;
+        }
+
+        main {
+            margin-left: var(--sidebar-w);
+            padding: 3rem 5%;
+            width: calc(100% - var(--sidebar-w));
+            box-sizing: border-box;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4rem;
+        }
+
+        .user-pill {
+            background: var(--surface);
+            padding: 8px 20px;
+            border-radius: 99px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .user-pill img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+        }
+
+        .eval-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .eval-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.4s;
+        }
+
+        .eval-card:hover {
+            border-color: var(--primary);
+            transform: scale(1.01);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .project-info h3 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+
+        .project-info p {
+            color: var(--text-mid);
+            font-size: 0.9rem;
+        }
+
+        .scoring-zone {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .score-field {
+            text-align: center;
+        }
+
+        .score-field span {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-mid);
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .score-input {
+            width: 70px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 700;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .score-input:focus {
+            border-color: var(--primary);
+            background: rgba(244, 63, 94, 0.05);
+        }
+
+        .btn-submit {
+            padding: 12px 25px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 5px 15px var(--primary-glow);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px var(--primary-glow);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            background: var(--text-mid);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 5rem;
+            color: var(--text-lo);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <h2><i class="fa-solid fa-gavel"></i> HackMaster<span>EVAL</span></h2>
+        <a href="#" class="nav-item active" data-section="pending"><i class="fa-solid fa-hourglass-start"></i> Pending
+            Reviews</a>
+        <a href="#" class="nav-item" data-section="completed"><i class="fa-solid fa-check-circle"></i> Scored
+            Projects</a>
+        <a href="#" class="nav-item" data-section="rank"><i class="fa-solid fa-chart-bar"></i> Global Rank</a>
+        <a href="#" class="nav-item logout-btn" id="logoutBtn"><i class="fa-solid fa-sign-out"></i> Logout</a>
+    </div>
+
+    <main class="animate__animated animate__fadeIn">
+        <div class="header">
+            <div>
+                <h1 id="welcomeText">Evaluation Queue</h1>
+                <p id="sectionSubtext" style="color: var(--text-mid)">Analyze and score participant submissions with
+                    precision.</p>
+            </div>
+            <div class="user-pill">
+                <div style="text-align: right; margin-right: 15px;">
+                    <strong id="userName">Judge</strong><br>
+                    <small style="color: var(--primary)">Lead Verifier</small>
+                </div>
+                <img src="" id="userAvatar">
+            </div>
+        </div>
+
+        <!-- Section: Pending -->
+        <div id="section-pending" class="dashboard-section active">
+            <div class="eval-grid" id="pendingList">
+                <!-- Mock Projects -->
+            </div>
+        </div>
+
+        <!-- Section: Completed -->
+        <div id="section-completed" class="dashboard-section" style="display: none;">
+            <div class="eval-grid" id="completedList">
+                <div class="eval-card" style="opacity: 0.6;">
+                    <div class="project-info">
+                        <h3>HealthSync</h3>
+                        <p>Team: BioHackers | Scored: 88/100</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Rank -->
+        <div id="section-rank" class="dashboard-section" style="display: none;">
+            <div class="eval-card">
+                <h3>Your Judging Impact</h3>
+                <p>You have reviewed 14 projects this week. Top 5% of active judges.</p>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { requireAuth, logout } from '../auth.js';
+
+        const session = requireAuth(['judge']);
+        if (session) {
+            document.getElementById('userName').textContent = session.name;
+            document.getElementById('welcomeText').textContent = `Review Panel: Dr. ${session.name.split(' ')[0]}`;
+            document.getElementById('userAvatar').src = `https://ui-avatars.com/api/?background=f43f5e&color=fff&name=${session.name}`;
+
+            // ── SPA Section Switching Logic ──
+            const navItems = document.querySelectorAll('.nav-item[data-section]');
+            const sections = document.querySelectorAll('.dashboard-section');
+            const subtext = document.getElementById('sectionSubtext');
+
+            const sectionMeta = {
+                pending: "Analyze and score participant submissions with precision.",
+                completed: "Review your previously submitted scores and feedback.",
+                rank: "Your standing among the global expert review panel."
+            };
+
+            navItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const target = item.dataset.section;
+
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    item.classList.add('active');
+
+                    sections.forEach(sec => sec.style.display = 'none');
+                    document.getElementById(`section-${target}`).style.display = 'block';
+
+                    subtext.textContent = sectionMeta[target];
+                });
+            });
+
+            const list = document.getElementById('pendingList');
+
+            async function render() {
+                const submissions = await db.getCollection('submissions');
+                const pending = submissions.filter(s => s.status === 'pending');
+
+                if (pending.length === 0) {
+                    list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-check-double fa-3x"></i><br><br>All projects have been evaluated!</div>';
+                    return;
+                }
+
+                list.innerHTML = pending.map(p => `
+                    <div class="eval-card animate__animated animate__fadeInUp">
+                        <div class="project-info">
+                            <small style="color: var(--primary); font-weight: 800; text-transform: uppercase;">${p.hackName}</small>
+                            <h3>${p.projectTitle}</h3>
+                            <p><i class="fa-solid fa-users"></i> Author: ${p.userName}</p>
+                        </div>
+                        <div class="scoring-zone">
+                            <div class="score-field">
+                                <span>Innovation</span>
+                                <input type="number" class="score-input" min="0" max="100" value="0">
+                            </div>
+                            <div class="score-field">
+                                <span>Technical</span>
+                                <input type="number" class="score-input" min="0" max="100" value="0">
+                            </div>
+                            <button class="btn-submit" data-id="${p.id}">Submit Score</button>
+                        </div>
+                    </div>
+                `).join('');
+
+                document.querySelectorAll('.btn-submit').forEach(btn => {
+                    btn.onclick = async (e) => {
+                        const subId = e.currentTarget.dataset.id;
+                        const card = e.currentTarget.closest('.eval-card');
+
+                        const scores = card.querySelectorAll('.score-input');
+                        const total = parseInt(scores[0].value) + parseInt(scores[1].value);
+
+                        e.currentTarget.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+                        e.currentTarget.disabled = true;
+
+                        try {
+                            await db.updateDocument('submissions', subId, {
+                                status: 'scored',
+                                score: total,
+                                judgedBy: session.uid,
+                                judgedAt: new Date().toISOString()
+                            });
+
+                            setTimeout(() => {
+                                card.classList.add('animate__animated', 'animate__fadeOutRight');
+                                setTimeout(() => render(), 500);
+                            }, 500);
+                        } catch (err) {
+                            alert('Failed to save score: ' + err.message);
+                            e.currentTarget.disabled = false;
+                        }
+                    };
+                });
+            }
+
+            document.getElementById('logoutBtn').onclick = () => logout();
+            render();
+        }
+    </script>
+</body>
+
+</html>

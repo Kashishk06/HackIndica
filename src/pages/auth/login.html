@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | HackMaster Pro</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <link rel="stylesheet" href="../../css/base/variables.css" />
+    <link rel="stylesheet" href="../../css/base/style.css" />
+
+    <style>
+        :root {
+            --auth-bg: #03040b;
+        }
+
+        body {
+            background-color: var(--auth-bg);
+            background-image:
+                radial-gradient(circle at 20% -20%,
+                    rgba(0, 242, 254, 0.15) 0%,
+                    transparent 50%),
+                radial-gradient(circle at 80% 120%,
+                    rgba(108, 99, 255, 0.15) 0%,
+                    transparent 50%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--sp-4);
+            font-family: "Inter", sans-serif;
+            color: var(--c-text-hi);
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 1000px;
+            background: rgba(15, 17, 26, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: var(--r-2xl);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            display: flex;
+            position: relative;
+        }
+
+        .auth-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg,
+                    transparent,
+                    var(--c-cyan),
+                    var(--c-violet),
+                    transparent);
+            opacity: 0.5;
+        }
+
+        .auth-hero {
+            flex: 1.2;
+            padding: var(--sp-12);
+            background: linear-gradient(135deg,
+                    rgba(0, 242, 254, 0.1) 0%,
+                    rgba(108, 99, 255, 0.05) 100%);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @media (max-width: 900px) {
+            .auth-hero {
+                display: none;
+            }
+        }
+
+        .hero-bento {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--sp-4);
+            margin-top: var(--sp-8);
+        }
+
+        .hero-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: var(--r-lg);
+            padding: var(--sp-5);
+            transition: all 0.3s ease;
+        }
+
+        .hero-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-2px);
+            border-color: rgba(0, 242, 254, 0.2);
+        }
+
+        .hero-icon {
+            font-size: 1.5rem;
+            margin-bottom: var(--sp-2);
+            background: -webkit-linear-gradient(135deg,
+                    var(--c-cyan),
+                    var(--c-violet));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .auth-form-wrapper {
+            flex: 1;
+            padding: var(--sp-12) var(--sp-10);
+            max-width: 480px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-group {
+            margin-bottom: var(--sp-5);
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: var(--sp-2);
+            font-size: var(--fs-sm);
+            color: var(--c-text-mid);
+            font-weight: var(--fw-semi);
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            color: var(--c-text-lo);
+            font-size: 1rem;
+        }
+
+        .form-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--r-md);
+            padding: 14px 16px 14px 44px;
+            color: var(--c-text-hi);
+            font-family: "Inter", sans-serif;
+            font-size: var(--fs-base);
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--c-cyan);
+            background: rgba(0, 0, 0, 0.4);
+            box-shadow: 0 0 0 4px rgba(0, 242, 254, 0.1);
+        }
+
+        .back-home {
+            position: absolute;
+            top: var(--sp-6);
+            left: var(--sp-6);
+            color: var(--c-text-mid);
+            text-decoration: none;
+            font-size: var(--fs-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--sp-2);
+            transition: color 0.2s;
+            z-index: 10;
+        }
+
+        .back-home:hover {
+            color: var(--c-cyan);
+        }
+
+        .login-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 242, 254, 0.1);
+            color: var(--c-cyan);
+            padding: 6px 12px;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: var(--sp-4);
+        }
+
+        .test-account-box {
+            margin-top: 24px;
+            font-size: 0.75rem;
+            color: var(--c-text-lo);
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 16px;
+            border-radius: var(--r-md);
+        }
+
+        .test-account-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .test-chip {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .test-chip:hover {
+            background: rgba(0, 242, 254, 0.1);
+            border-color: rgba(0, 242, 254, 0.2);
+            color: var(--c-cyan);
+        }
+    </style>
+</head>
+
+<body>
+    <a href="../../index.html" class="back-home">
+        <i class="fa-solid fa-arrow-left"></i> Home
+    </a>
+
+    <div class="auth-container scale-in">
+        <!-- Left Hero Section -->
+        <div class="auth-hero">
+            <div>
+                <a href="../../index.html" style="
+              text-decoration: none;
+              display: flex;
+              align-items: center;
+              gap: 10px;
+              margin-bottom: var(--sp-8);
+            ">
+                    <img src="../../assets/icons/logo.svg" alt="Logo" style="
+                height: 32px;
+                filter: drop-shadow(0 0 8px rgba(0, 242, 254, 0.4));
+              " />
+                    <span style="font-size: 1.5rem; font-weight: 800; color: white">HackMaster<span
+                            class="accent">Pro</span></span>
+                </a>
+
+                <h1 style="
+              font-size: 2.8rem;
+              font-weight: 800;
+              line-height: 1.1;
+              margin-bottom: var(--sp-4);
+            ">
+                    Welcome back to the
+                    <span style="
+                background: linear-gradient(
+                  135deg,
+                  var(--c-cyan),
+                  var(--c-violet)
+                );
+                -webkit-background-clip: text;
+                background-clip: text;
+                -webkit-text-fill-color: transparent;
+              ">Nexus.</span>
+                </h1>
+                <p style="
+              color: var(--c-text-mid);
+              font-size: 1.1rem;
+              max-width: 400px;
+              line-height: 1.6;
+            ">
+                    Log in to access your dashboard, manage events, and track
+                    submissions on the world's most advanced hackathon platform.
+                </p>
+            </div>
+
+            <div class="hero-bento">
+                <div class="hero-card">
+                    <i class="fa-solid fa-gauge-high hero-icon"></i>
+                    <h3 style="color: white; font-size: 1rem; margin-bottom: var(--sp-1)">
+                        Smart Insights
+                    </h3>
+                    <p style="color: var(--c-text-lo); font-size: 0.875rem">
+                        Real-time analytics for every event interaction.
+                    </p>
+                </div>
+                <div class="hero-card">
+                    <i class="fa-solid fa-users-viewfinder hero-icon"></i>
+                    <h3 style="color: white; font-size: 1rem; margin-bottom: var(--sp-1)">
+                        Team Synergy
+                    </h3>
+                    <p style="color: var(--c-text-lo); font-size: 0.875rem">
+                        Seamless collaboration for all project stakeholders.
+                    </p>
+                </div>
+                <div class="hero-card">
+                    <i class="fa-solid fa-chess-knight hero-icon"></i>
+                    <h3 style="color: white; font-size: 1rem; margin-bottom: var(--sp-1)">
+                        Fair Scoring
+                    </h3>
+                    <p style="color: var(--c-text-lo); font-size: 0.875rem">
+                        Advanced parameter-based judging algorithms.
+                    </p>
+                </div>
+                <div class="hero-card">
+                    <i class="fa-solid fa-wand-magic-sparkles hero-icon"></i>
+                    <h3 style="color: white; font-size: 1rem; margin-bottom: var(--sp-1)">
+                        No-Code Setup
+                    </h3>
+                    <p style="color: var(--c-text-lo); font-size: 0.875rem">
+                        Launch full-scale hackathons in minutes.
+                    </p>
+                </div>
+            </div>
+
+            <div style="
+            margin-top: var(--sp-8);
+            color: var(--c-text-lo);
+            font-size: 0.875rem;
+            text-align: center;
+          ">
+                Securely powered by HackMaster Cloud Core v2.0
+            </div>
+        </div>
+
+        <!-- Right Form Section -->
+        <div class="auth-form-wrapper">
+            <div style="margin-bottom: var(--sp-8)">
+                <div class="login-badge">
+                    <i class="fa-solid fa-lock-open"></i> Secure Access
+                </div>
+                <h2 style="
+              font-size: 2.2rem;
+              font-weight: 800;
+              margin-bottom: var(--sp-1);
+            ">
+                    Sign In
+                </h2>
+                <p style="color: var(--c-text-mid); font-size: var(--fs-sm)">
+                    Enter your credentials to continue your journey.
+                </p>
+            </div>
+
+            <form id="loginForm" class="auth-form">
+                <div class="form-group">
+                    <label class="form-label" for="email">Email Address</label>
+                    <div class="input-wrapper">
+                        <i class="fa-regular fa-envelope input-icon"></i>
+                        <input type="email" id="email" class="form-input" placeholder="name@domain.com" required />
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: var(--sp-8)">
+                    <div style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: var(--sp-2);
+              ">
+                        <label class="form-label" for="password" style="margin-bottom: 0">Password</label>
+                        <a href="#" style="
+                  color: var(--c-cyan);
+                  font-size: var(--fs-xs);
+                  text-decoration: none;
+                  font-weight: 600;
+                ">Forgot password?</a>
+                    </div>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-shield-halved input-icon"></i>
+                        <input type="password" id="password" class="form-input" placeholder="••••••••" required
+                            minlength="6" />
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block btn-lg" id="submitBtn" style="
+              background: linear-gradient(135deg, #00f2fe, #4facfe);
+              border: none;
+              box-shadow: 0 10px 20px -5px rgba(0, 242, 254, 0.4);
+            ">
+                    Continue to Dashboard
+                    <i class="fa-solid fa-arrow-right-long" style="margin-left: 8px"></i>
+                </button>
+            </form>
+
+            <div class="test-account-box">
+                <div style="
+              font-weight: 700;
+              color: var(--c-text-hi);
+              display: flex;
+              align-items: center;
+              gap: 8px;
+            ">
+                    <i class="fa-solid fa-vial"></i> Quick Test Access
+                </div>
+                <div style="margin-top: 4px">Password: <strong>123456</strong></div>
+                <div class="test-account-grid">
+                    <div class="test-chip" onclick="fillTest('superadmin@hackmaster.com')">
+                        Super Admin
+                    </div>
+                    <div class="test-chip" onclick="fillTest('org@hackmaster.com')">
+                        Organiser
+                    </div>
+                    <div class="test-chip" onclick="fillTest('part@hackmaster.com')">
+                        Participant
+                    </div>
+                    <div class="test-chip" onclick="fillTest('judge@hackmaster.com')">
+                        Judge
+                    </div>
+                </div>
+            </div>
+
+            <div class="auth-footer" style="
+            text-align: center;
+            margin-top: var(--sp-10);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: var(--sp-6);
+          ">
+                <p style="color: var(--c-text-mid); font-size: var(--fs-sm)">
+                    New to the ecosystem?
+                    <a href="register.html" class="auth-link" style="
+                color: var(--c-cyan);
+                font-weight: var(--fw-bold);
+                text-decoration: none;
+                border-bottom: 2px solid rgba(0, 242, 254, 0.2);
+              ">Create a free account</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module">
+        import { createAuthForm } from "../../js/pages/auth.js";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            // Initialize the unified Auth logic
+            createAuthForm("loginForm", "login", "submitBtn");
+
+            // Quick Fill helper
+            window.fillTest = (email) => {
+                document.getElementById("email").value = email;
+                document.getElementById("password").value = "123456";
+
+                // Show a quick visual feedback on the button
+                const btn = document.getElementById("submitBtn");
+                btn.focus();
+
+                // Auto-submit after a tiny delay for visual effect
+                setTimeout(() => {
+                    document.getElementById("loginForm").requestSubmit();
+                }, 400);
+            };
+        });
+    </script>
+</body>
+
+</html>
