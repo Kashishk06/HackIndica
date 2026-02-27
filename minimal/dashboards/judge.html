@@ -270,6 +270,7 @@
 
     <script type="module">
         import { requireAuth, logout } from '../auth.js';
+        import { db } from '../db.js';
 
         const session = requireAuth(['judge']);
         if (session) {
