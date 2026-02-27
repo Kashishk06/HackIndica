@@ -863,7 +863,55 @@
             }
 
             async function renderParticipants() {
-                // ... (existing logic)
+                const list = document.getElementById('participantsList');
+                const regs = await db.getCollection('registrations');
+                const hacks = await db.getCollection('hackathons');
+                const submissions = await db.getCollection('submissions');
+
+                if (regs.length === 0) {
+                    list.innerHTML = `
+                        <div class="stat-card" style="text-align: center; padding: 4rem; border: 2px dashed var(--border);">
+                            <i class="fa-solid fa-user-slash" style="font-size: 3rem; color: var(--text-lo); margin-bottom: 1.5rem;"></i>
+                            <h3>No Participants Yet</h3>
+                            <p style="color: var(--text-mid);">Wait for hackers to apply to your events.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                list.innerHTML = regs.reverse().map(r => {
+                    const hack = hacks.find(h => h.id === r.hackId);
+                    const sub = submissions.find(s => s.hackId === r.hackId && s.userId === r.userId);
+
+                    return `
+                        <div class="stat-card animate__animated animate__fadeIn" style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem;">
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <img src="https://ui-avatars.com/api/?name=${r.userName}&background=random" style="width: 45px; height: 45px; border-radius: 12px;" />
+                                <div>
+                                    <strong style="font-size: 1.1rem; color: #fff;">${r.userName}</strong>
+                                    <div style="font-size: 0.8rem; color: var(--text-mid); margin-top: 4px;">
+                                        <i class="fa-solid fa-calendar-check"></i> Joined ${new Date(r.appliedAt).toLocaleDateString()}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div style="flex: 1; margin-left: 3rem;">
+                                <div style="font-size: 0.7rem; color: var(--text-mid); text-transform: uppercase; letter-spacing: 1px;">Enrolled In</div>
+                                <div style="font-size: 0.95rem; color: var(--primary); font-weight: 600;">${hack ? hack.name : 'Unknown Hackathon'}</div>
+                            </div>
+
+                            <div style="flex: 1;">
+                                <div style="font-size: 0.7rem; color: var(--text-mid); text-transform: uppercase; letter-spacing: 1px;">Team Status</div>
+                                <div style="font-size: 0.95rem; color: #fff;">${sub ? `<i class="fa-solid fa-users" style="color: #10b981;"></i> ${sub.teamName}` : '<i class="fa-solid fa-user"></i> Solo / Pending'}</div>
+                            </div>
+
+                            <div style="display: flex; gap: 10px;">
+                                <button class="btn-icon" title="View Profile"><i class="fa-solid fa-user"></i></button>
+                                <button class="btn-icon" title="Send Message"><i class="fa-solid fa-envelope"></i></button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
             }
 
             function renderActivityFeed(hacks, regs) {
