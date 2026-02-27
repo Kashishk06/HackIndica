@@ -301,6 +301,110 @@
             font-family: inherit;
         }
 
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            width: 90%;
+            max-width: 500px;
+            padding: 2.5rem;
+            border-radius: 24px;
+            position: relative;
+            animation: modalSlide 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes modalSlide {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5rem;
+            color: var(--text-mid);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .close-modal:hover {
+            color: white;
+        }
+
+        .member-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border: 1px solid transparent;
+            transition: 0.3s;
+        }
+
+        .member-item.is-lead {
+            border-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        .member-item img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .lead-badge {
+            background: #f59e0b;
+            color: black;
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 800;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        .btn-set-lead {
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-mid);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-set-lead:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+
         .skill-tag {
             background: rgba(16, 185, 129, 0.1);
             color: var(--primary);
@@ -488,6 +592,20 @@
     </main>
 
     <div class="toast" id="successToast">Successfully Registered! See you at the hack.</div>
+
+    <div class="modal" id="teamModal">
+        <div class="modal-content">
+            <i class="fa-solid fa-xmark close-modal" id="closeTeamModal"></i>
+            <h2 id="modalTeamName">Team Management</h2>
+            <p style="color: var(--text-mid); margin-bottom: 2rem;">Manage your squad and assign a team leader.</p>
+
+            <div id="modalMemberList">
+                <!-- Members injected here -->
+            </div>
+
+            <button class="btn btn-primary" style="margin-top: 2rem;" id="saveTeamBtn">Save Changes</button>
+        </div>
+    </div>
 
     <script type="module">
         import { requireAuth, logout } from '../auth.js';
@@ -882,19 +1000,92 @@
 
         async function renderMyTeams() {
             const list = document.getElementById('teamsList');
-            // Mock for now, could be derived from 'teams' collection if added
+
+            // For now, let's use a persistent mock team that the user can actually "edit"
+            if (!localStorage.getItem('hackindica_my_team')) {
+                const initialTeam = {
+                    name: "Team Alpha",
+                    hack: "Smart India Hackathon 2024",
+                    members: [
+                        { name: session.name, role: "Fullstack", isLead: true, avatar: `https://ui-avatars.com/api/?name=${session.name}&background=10b981&color=fff` },
+                        { name: "Priya Das", role: "AI Engineer", isLead: false, avatar: "https://ui-avatars.com/api/?name=Priya+Das&background=random" },
+                        { name: "Rahul Singh", role: "UI/UX", isLead: false, avatar: "https://ui-avatars.com/api/?name=Rahul+Singh&background=random" }
+                    ]
+                };
+                localStorage.setItem('hackindica_my_team', JSON.stringify(initialTeam));
+            }
+
+            const team = JSON.parse(localStorage.getItem('hackindica_my_team'));
+
             list.innerHTML = `
-                <div class="hack-card">
-                    <div style="display: flex; gap: 10px; margin-bottom: 1rem;">
-                        <img src="https://ui-avatars.com/api/?name=Team+Alpha&background=10b981&color=fff" style="width: 50px; border-radius: 12px;">
+                <div class="hack-card animate__animated animate__fadeIn">
+                    <div style="display: flex; gap: 15px; margin-bottom: 1.5rem; align-items: center;">
+                        <div style="width: 60px; height: 60px; background: var(--primary); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.5rem; color: white;">
+                            ${team.name.charAt(0)}
+                        </div>
                         <div>
-                            <h3>Team Alpha</h3>
-                            <p>3 Members • Active</p>
+                            <h3 style="font-size: 1.4rem;">${team.name}</h3>
+                            <p style="margin: 0; font-size: 0.85rem;">${team.members.length} Members • ${team.hack}</p>
                         </div>
                     </div>
-                    <button class="btn btn-primary" style="padding: 0.5rem;">View Chat</button>
+                    
+                    <div style="display: flex; gap: 10px; margin-bottom: 1rem;">
+                        ${team.members.map(m => `
+                            <img src="${m.avatar}" style="width: 32px; height: 32px; border-radius: 50%; border: 2px solid ${m.isLead ? '#f59e0b' : 'var(--border)'}" title="${m.name} ${m.isLead ? '(Lead)' : ''}">
+                        `).join('')}
+                    </div>
+
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-primary" id="openTeamMgmt" style="padding: 0.7rem;">Manage Team</button>
+                        <button class="btn btn-outline" style="padding: 0.7rem; border: 1px solid var(--border); background: transparent; color: white;">Team Chat</button>
+                    </div>
                 </div>
             `;
+
+            document.getElementById('openTeamMgmt').onclick = () => {
+                const modal = document.getElementById('teamModal');
+                const memberList = document.getElementById('modalMemberList');
+
+                modal.style.display = 'flex';
+
+                const renderModalMembers = () => {
+                    const currentTeam = JSON.parse(localStorage.getItem('hackindica_my_team'));
+                    memberList.innerHTML = currentTeam.members.map((m, idx) => `
+                        <div class="member-item ${m.isLead ? 'is-lead' : ''}">
+                            <div style="display:flex; align-items: center; gap: 12px;">
+                                <img src="${m.avatar}">
+                                <div>
+                                    <div style="font-weight: 700;">${m.name} ${m.isLead ? '<span class="lead-badge">LEAD</span>' : ''}</div>
+                                    <small style="color: var(--text-mid)">${m.role}</small>
+                                </div>
+                            </div>
+                            ${!m.isLead ? `<button class="btn-set-lead" data-idx="${idx}">Assign Lead</button>` : ''}
+                        </div>
+                    `).join('');
+
+                    // Logic to set lead
+                    document.querySelectorAll('.btn-set-lead').forEach(btn => {
+                        btn.onclick = () => {
+                            const newIdx = parseInt(btn.dataset.idx);
+                            currentTeam.members.forEach((mem, i) => mem.isLead = (i === newIdx));
+                            localStorage.setItem('hackindica_my_team', JSON.stringify(currentTeam));
+                            renderModalMembers();
+                        };
+                    });
+                };
+
+                renderModalMembers();
+            };
+
+            document.getElementById('closeTeamModal').onclick = () => {
+                document.getElementById('teamModal').style.display = 'none';
+                renderMyTeams(); // Refresh dashboard card
+            };
+
+            document.getElementById('saveTeamBtn').onclick = () => {
+                document.getElementById('teamModal').style.display = 'none';
+                renderMyTeams();
+            };
         }
     </script>
 </body>
