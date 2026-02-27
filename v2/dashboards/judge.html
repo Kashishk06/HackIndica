@@ -241,7 +241,55 @@
         .empty-state {
             text-align: center;
             padding: 5rem;
-            color: var(--text-lo);
+            color: var(--text-mid);
+        }
+
+        /* ── Leaderboard Table ── */
+        .rank-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+        }
+
+        .rank-table th {
+            text-align: left;
+            padding: 1rem;
+            color: var(--text-mid);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .rank-table td {
+            padding: 1.2rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .rank-number {
+            font-weight: 800;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .team-info-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .team-info-cell img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+        }
+
+        .score-pill {
+            background: rgba(244, 63, 94, 0.1);
+            color: var(--primary);
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.9rem;
         }
     </style>
 </head>
@@ -278,28 +326,45 @@
 
         <!-- Section: Pending -->
         <div id="section-pending" class="dashboard-section active">
-            <div class="eval-grid" id="pendingList">
-                <!-- Mock Projects -->
+            <div id="pendingList" class="eval-grid">
+                <div class="empty-state">
+                    <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
+                    <p>Fetching latest submissions...</p>
+                </div>
             </div>
         </div>
 
         <!-- Section: Completed -->
         <div id="section-completed" class="dashboard-section" style="display: none;">
             <div class="eval-grid" id="completedList">
-                <div class="eval-card" style="opacity: 0.6;">
-                    <div class="project-info">
-                        <h3>HealthSync</h3>
-                        <p>Team: BioHackers | Scored: 88/100</p>
-                    </div>
+                <div class="empty-state">
+                    <i class="fa-solid fa-check-circle fa-2x"></i>
+                    <p>You haven't scored any projects yet.</p>
                 </div>
             </div>
         </div>
 
         <!-- Section: Rank -->
         <div id="section-rank" class="dashboard-section" style="display: none;">
-            <div class="eval-card">
-                <h3>Your Judging Impact</h3>
-                <p>You have reviewed 14 projects this week. Top 5% of active judges.</p>
+            <div class="eval-card" style="flex-direction: column; align-items: stretch;">
+                <h3>Global Hackathon Leaderboard</h3>
+                <p style="color: var(--text-mid); margin-bottom: 2rem;">Real-time standing of all evaluated teams across
+                    the platform.</p>
+
+                <table class="rank-table" id="globalRankTable">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Team/Project</th>
+                            <th>Hackathon</th>
+                            <th>Final Score</th>
+                            <th>Verification</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                        <!-- Rankings injected here -->
+                    </tbody>
+                </table>
             </div>
         </div>
     </main>
@@ -336,17 +401,20 @@
                     document.getElementById(`section-${target}`).style.display = 'block';
 
                     subtext.textContent = sectionMeta[target];
+
+                    if (target === 'rank') renderLeaderboard();
+                    if (target === 'completed') renderCompleted();
+                    if (target === 'pending') renderPending();
                 });
             });
 
-            const list = document.getElementById('pendingList');
-
-            async function render() {
+            async function renderPending() {
+                const list = document.getElementById('pendingList');
                 const submissions = await db.getCollection('submissions');
                 const pending = submissions.filter(s => s.status === 'pending');
 
                 if (pending.length === 0) {
-                    list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-check-double fa-3x"></i><br><br>All projects have been evaluated!</div>';
+                    list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-check-double fa-3x" style="color: #10b981"></i><br><br>All projects have been evaluated!</div>';
                     return;
                 }
 
@@ -356,7 +424,8 @@
                             <div class="project-info">
                                 <small style="color: var(--primary); font-weight: 800; text-transform: uppercase;">${p.hackName}</small>
                                 <h3 style="font-size: 1.8rem; margin: 10px 0;">${p.projectTitle}</h3>
-                                <p><i class="fa-solid fa-users"></i> Author: ${p.userName}</p>
+                                <p><i class="fa-solid fa-user-ninja"></i> Lead: ${p.userName}</p>
+                                <p style="font-size: 0.8rem; margin-top: 5px;"><i class="fa-solid fa-link"></i> Submission ID: #${p.id.slice(-6).toUpperCase()}</p>
                             </div>
                             <div class="total-display" style="text-align: right;">
                                 <span style="font-size: 0.7rem; display: block; margin-bottom: 5px;">LIVE TOTAL</span>
@@ -387,19 +456,89 @@
                             </div>
                         </div>
 
-                        <textarea class="feedback-input" id="feedback-${p.id}" placeholder="Enter constructive feedback and suggestions for the team..." rows="3"></textarea>
+                        <textarea class="feedback-input" id="feedback-${p.id}" placeholder="Provide expert feedback to help the team improve..." rows="3"></textarea>
 
-                        <button class="btn-submit" data-id="${p.id}" style="width: 100%;">Finalize & Submit Score</button>
+                        <button class="btn-submit" data-id="${p.id}" style="width: 100%;">Commit Final Score & Update Leaderboard</button>
                     </div>
                 `).join('');
 
-                // Live total sync
+                setupEventListeners();
+            }
+
+            async function renderCompleted() {
+                const list = document.getElementById('completedList');
+                const submissions = await db.getCollection('submissions');
+                const scored = submissions.filter(s => s.status === 'scored' && s.judgedBy === session.uid);
+
+                if (scored.length === 0) {
+                    list.innerHTML = '<div class="empty-state">You haven\'t evaluated any projects yet.</div>';
+                    return;
+                }
+
+                list.innerHTML = scored.map(s => `
+                    <div class="eval-card animate__animated animate__fadeIn">
+                        <div style="display: flex; justify-content: space-between; width: 100%;">
+                            <div>
+                                <small style="color: var(--text-mid); font-weight: 700;">${s.hackName}</small>
+                                <h3 style="margin: 5px 0;">${s.projectTitle}</h3>
+                                <p>Evaluated for: ${s.userName}</p>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="total-badge" style="background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid #10b981;">${s.score}/50</div>
+                                <small style="display: block; margin-top: 5px; color: var(--text-mid);">Finalized</small>
+                            </div>
+                        </div>
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 12px; font-size: 0.9rem; width: 100%;">
+                            <strong>Feedback:</strong> ${s.feedback}
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            async function renderLeaderboard() {
+                const list = document.getElementById('leaderboardBody');
+                const submissions = await db.getCollection('submissions');
+
+                const sorted = submissions
+                    .filter(s => s.status === 'scored')
+                    .sort((a, b) => b.score - a.score);
+
+                if (sorted.length === 0) {
+                    list.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 3rem; color: var(--text-mid);">No projects have been verified yet. Check back once scoring begins!</td></tr>';
+                    return;
+                }
+
+                list.innerHTML = sorted.map((s, i) => `
+                    <tr class="animate__animated animate__fadeInUp" style="animation-delay: ${i * 0.05}s">
+                        <td><span class="rank-number">#${i + 1}</span></td>
+                        <td>
+                            <div class="team-info-cell">
+                                <img src="https://ui-avatars.com/api/?name=${s.userName}&background=random">
+                                <div>
+                                    <div style="font-weight: 700;">${s.projectTitle}</div>
+                                    <div style="font-size: 0.8rem; color: var(--text-mid);">Author: ${s.userName}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="font-size: 0.9rem;">${s.hackName}</td>
+                        <td><span class="score-pill">${s.score}/50</span></td>
+                        <td><span style="color: #10b981; font-size: 0.75rem;"><i class="fa-solid fa-circle-check"></i> VERIFIED</span></td>
+                    </tr>
+                `).join('');
+            }
+
+            function setupEventListeners() {
                 document.querySelectorAll('.p-input').forEach(input => {
                     input.oninput = (e) => {
                         const pid = e.target.dataset.pid;
                         const cardInputs = document.querySelectorAll(`.p-input[data-pid="${pid}"]`);
                         let sum = 0;
-                        cardInputs.forEach(i => sum += parseInt(i.value || 0));
+                        cardInputs.forEach(i => {
+                            let val = parseInt(i.value || 0);
+                            if (val > 10) { i.value = 10; val = 10; }
+                            if (val < 0) { i.value = 0; val = 0; }
+                            sum += val;
+                        });
                         document.getElementById(`total-${pid}`).textContent = `${sum}/50`;
                     };
                 });
@@ -414,7 +553,12 @@
                         const total = scores.reduce((a, b) => a + b, 0);
                         const feedback = document.getElementById(`feedback-${subId}`).value;
 
-                        e.currentTarget.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Finalizing Results...';
+                        if (!feedback) {
+                            alert("Please provide feedback before submitting.");
+                            return;
+                        }
+
+                        e.currentTarget.innerHTML = '<i class="fa-solid fa-rocket fa-spin"></i> Syncing Leaderboard...';
                         e.currentTarget.disabled = true;
 
                         try {
@@ -428,19 +572,19 @@
                             });
 
                             setTimeout(() => {
-                                card.classList.add('animate__animated', 'animate__fadeOutRight');
-                                setTimeout(() => render(), 200);
-                            }, 200);
+                                card.classList.add('animate__animated', 'animate__fadeOutLeft');
+                                setTimeout(() => renderPending(), 400);
+                            }, 300);
                         } catch (err) {
                             alert('Failed to save score: ' + err.message);
-                            e.currentTarget.disabled = false;
+                            btn.disabled = false;
                         }
                     };
                 });
             }
 
             document.getElementById('logoutBtn').onclick = () => logout();
-            render();
+            renderPending();
         }
     </script>
 </body>

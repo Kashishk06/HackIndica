@@ -35,5 +35,36 @@
         }
     ],
     "users": [],
-    "submissions": []
+    "submissions": [
+        {
+            "id": "s1",
+            "hackId": "h1",
+            "hackName": "Smart India Hackathon 2024",
+            "userId": "u1",
+            "userName": "Rohan Sharma",
+            "projectTitle": "AgriSmart AI",
+            "status": "pending",
+            "submittedAt": "2024-03-22T10:00:00Z"
+        },
+        {
+            "id": "s2",
+            "hackId": "h2",
+            "hackName": "Web3 BLR Summit",
+            "userId": "u2",
+            "userName": "Priya Patel",
+            "projectTitle": "DeFi Health insurance",
+            "status": "pending",
+            "submittedAt": "2024-04-14T09:30:00Z"
+        },
+        {
+            "id": "s3",
+            "hackId": "h3",
+            "hackName": "AI-ML Healthcare Hack",
+            "userId": "u3",
+            "userName": "Amit Varma",
+            "projectTitle": "NeuroScan Explorer",
+            "status": "pending",
+            "submittedAt": "2024-05-04T11:15:00Z"
+        }
+    ]
 }
