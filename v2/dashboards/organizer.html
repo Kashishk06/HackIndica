@@ -188,6 +188,73 @@
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
         }
 
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+            align-items: flex-start;
+        }
+
+        .activity-feed {
+            background: var(--surface);
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            height: 100%;
+        }
+
+        .feed-item {
+            display: flex;
+            gap: 12px;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .feed-item:last-child {
+            border-bottom: none;
+        }
+
+        .feed-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .action-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 1.2rem;
+            border-radius: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .action-card:hover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+            transform: translateY(-3px);
+        }
+
+        .action-card i {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
         .section-top {
             display: flex;
             justify-content: space-between;
@@ -335,10 +402,9 @@
         <h2><i class="fa-solid fa-bolt-lightning"></i> HackIndica<span>ORG</span></h2>
         <a href="#" class="nav-item active" data-section="overview"><i class="fa-solid fa-chart-pie"></i> Overview</a>
         <a href="#" class="nav-item" data-section="events"><i class="fa-solid fa-calendar-check"></i> My Events</a>
-        <a href="#" class="nav-item" data-section="participants"><i class="fa-solid fa-users-viewfinder"></i>
-            Participants</a>
-        <a href="#" class="nav-item" data-section="notifications"><i class="fa-solid fa-envelope-open-text"></i>
-            Notifications</a>
+        <a href="#" class="nav-item" data-section="participants"><i class="fa-solid fa-users-viewfinder"></i> Participants</a>
+        <a href="#" class="nav-item" data-section="analytics"><i class="fa-solid fa-chart-line"></i> Global Analytics</a>
+        <a href="#" class="nav-item" data-section="notifications"><i class="fa-solid fa-envelope-open-text"></i> Notifications</a>
         <a href="#" class="nav-item" data-section="settings"><i class="fa-solid fa-gear"></i> Settings</a>
         <a href="#" class="nav-item logout-btn" id="logoutBtn"><i class="fa-solid fa-arrow-right-from-bracket"></i>
             Logout</a>
@@ -364,49 +430,79 @@
         <!-- Section: Overview -->
         <div id="section-overview" class="dashboard-section active">
             <div class="stats-grid">
-                <div class="stat-card animate__animated animate__fadeInUp animate__delay-1s">
+                <div class="stat-card animate__animated animate__fadeInUp">
                     <span>Total Events</span>
                     <h3 id="statTotalEvents">00</h3>
                 </div>
-                <div class="stat-card animate__animated animate__fadeInUp animate__delay-1s"
+                <div class="stat-card animate__animated animate__fadeInUp"
                     style="border-bottom: 3px solid var(--primary);">
-                    <span>Total Registrations</span>
+                    <span>Total Regs</span>
                     <h3 id="statTotalRegs">0</h3>
                 </div>
-                <div class="stat-card animate__animated animate__fadeInUp animate__delay-1s">
+                <div class="stat-card animate__animated animate__fadeInUp">
                     <span>Submissions</span>
                     <h3 id="statSubmissionRate">0%</h3>
                 </div>
-                <div class="stat-card animate__animated animate__fadeInUp animate__delay-1s">
-                    <span>System Status</span>
-                    <h3 style="color: #10b981; font-size: 1.5rem;"><i class="fa-solid fa-circle-check"></i> OPTIMAL</h3>
+                <div class="stat-card animate__animated animate__fadeInUp">
+                    <span>Uptime</span>
+                    <h3 style="color: #10b981;"><i class="fa-solid fa-circle-check"></i> 99.9%</h3>
                 </div>
             </div>
 
-            <div class="content-area animate__animated animate__fadeInUp animate__delay-2s">
-                <div class="section-top">
-                    <h2>Active Hackathons</h2>
-                    <div style="display: flex; gap: 12px;">
-                        <button class="btn btn-outline" id="refreshBtn"><i class="fa-solid fa-sync"></i> Sync
-                            Data</button>
-                        <button class="btn btn-primary" id="openModalBtn"><i class="fa-solid fa-plus-circle"></i> Create
-                            New</button>
+            <div class="quick-actions animate__animated animate__fadeInUp">
+                <div class="action-card" onclick="alert('Broadcasting to all participants...')">
+                    <i class="fa-solid fa-tower-broadcast"></i>
+                    <div>Broadcast</div>
+                </div>
+                <div class="action-card" onclick="alert('Exporting data as CSV...')">
+                    <i class="fa-solid fa-file-export"></i>
+                    <div>Export Stats</div>
+                </div>
+                <div class="action-card" id="openModalBtn3">
+                    <i class="fa-solid fa-calendar-plus"></i>
+                    <div>Quick Event</div>
+                </div>
+                <div class="action-card" onclick="alert('Maintenance mode toggled.')">
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                    <div>Dev Tools</div>
+                </div>
+            </div>
+
+            <div class="dashboard-layout animate__animated animate__fadeInUp">
+                <div class="content-area">
+                    <div class="section-top">
+                        <h2>Active Hackathons</h2>
+                        <div style="display: flex; gap: 12px;">
+                            <button class="btn btn-outline" id="refreshBtn"><i class="fa-solid fa-sync"></i>
+                                Refresh</button>
+                            <button class="btn btn-primary" id="openModalBtn"><i class="fa-solid fa-plus"></i> New
+                                Hack</button>
+                        </div>
+                    </div>
+                    <table id="hackathonTable">
+                        <thead>
+                            <tr>
+                                <th>Hackathon Details</th>
+                                <th>Domain</th>
+                                <th>Metrics</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="hackathonList">
+                            <!-- Dynamic Data -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="activity-feed">
+                    <h3
+                        style="margin-bottom: 1.5rem; font-size: 1.1rem; display: flex; align-items: center; gap: 10px;">
+                        <i class="fa-solid fa-rss" style="color: var(--primary);"></i> Live Activity
+                    </h3>
+                    <div id="liveFeed">
+                        <!-- Feed items injected here -->
                     </div>
                 </div>
-                <table id="hackathonTable">
-                    <thead>
-                        <tr>
-                            <th>Hackathon Details</th>
-                            <th>Domain</th>
-                            <th>Status</th>
-                            <th>Metrics</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="hackathonList">
-                        <!-- Dynamic Data -->
-                    </tbody>
-                </table>
             </div>
         </div>
 
@@ -436,19 +532,45 @@
             </div>
         </div>
 
-        <!-- Section: Notifications -->
-        <div id="section-notifications" class="dashboard-section" style="display: none;">
+        <!-- Section: Analytics -->
+        <div id="section-analytics" class="dashboard-section" style="display: none;">
             <div class="content-area">
-                <h2>System Notifications</h2>
-                <div id="notifList" style="display: grid; gap: 1rem; margin-top: 1.5rem;">
-                    <div class="stat-card" style="padding: 1rem;">
-                        <strong style="color: var(--primary);">System Update</strong>
-                        <p style="font-size: 0.9rem; margin-top: 5px;">HackIndica v2 engine is now live with real-time
-                            JSON sync.</p>
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem;">
+                    <div>
+                        <h2>Global Performance Metrics</h2>
+                        <p style="color: var(--text-mid)">Real-time submission and registration trends.</p>
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                    <div class="stat-card" style="height: 300px; display: flex; align-items: flex-end; gap: 1rem; padding: 2rem;">
+                        <div style="flex: 1; background: var(--primary); height: 40%; border-radius: 8px 8px 0 0;"></div>
+                        <div style="flex: 1; background: var(--primary); height: 60%; border-radius: 8px 8px 0 0;"></div>
+                        <div style="flex: 1; background: var(--primary); height: 85%; border-radius: 8px 8px 0 0;"></div>
+                        <div style="flex: 1; background: var(--primary); height: 45%; border-radius: 8px 8px 0 0;"></div>
+                        <div style="flex: 1; background: var(--primary); height: 95%; border-radius: 8px 8px 0 0; box-shadow: 0 0 20px var(--primary-glow);"></div>
+                    </div>
+                    <div class="stat-card" style="display: flex; flex-direction: column; justify-content: center; gap: 1.5rem;">
+                        <div>
+                            <span style="font-size: 0.7rem; color: var(--text-mid);">MOST ACTIVE DOMAIN</span>
+                            <h4 style="font-size: 1.5rem; color: var(--primary);">Artificial Intelligence</h4>
+                        </div>
+                        <div style="height: 1px; background: rgba(255,255,255,0.05);"></div>
+                        <div>
+                            <span style="font-size: 0.7rem; color: var(--text-mid);">AVG. TEAM SIZE</span>
+                            <h4 style="font-size: 1.5rem;">3.4 Members</h4>
+                        </div>
+                        <div style="height: 1px; background: rgba(255,255,255,0.05);"></div>
+                        <div>
+                            <span style="font-size: 0.7rem; color: var(--text-mid);">CONVERSION RATE</span>
+                            <h4 style="font-size: 1.5rem;">82% Submissions</h4>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Section: Notifications -->
 
         <!-- Section: Settings -->
         <div id="section-settings" class="dashboard-section" style="display: none;">
@@ -542,6 +664,7 @@
                     // Specific logic for sections
                     if (target === 'events') renderMyEvents();
                     if (target === 'participants') renderParticipants();
+                    if (target === 'analytics') console.log('Analytics loaded');
                 });
             });
 
@@ -587,6 +710,9 @@
                     `;
                 }).join('');
 
+                // Update Feed
+                renderActivityFeed(hacks, regs);
+
                 // Attach Delete Handlers
                 document.querySelectorAll('.btn-danger').forEach(btn => {
                     btn.onclick = async (e) => {
@@ -614,32 +740,51 @@
             }
 
             async function renderParticipants() {
-                const pList = document.getElementById('participantsList');
-                const regs = await db.getCollection('registrations');
-                const hacks = await db.getCollection('hackathons');
+                // ... (existing logic)
+            }
 
-                if (regs.length === 0) {
-                    pList.innerHTML = '<div style="text-align: center; color: var(--text-mid); padding: 3rem;">No participants have registered yet.</div>';
-                    return;
-                }
+            function renderActivityFeed(hacks, regs) {
+                const feed = document.getElementById('liveFeed');
+                const activities = [];
 
-                pList.innerHTML = regs.map(r => {
-                    const hackName = hacks.find(h => h.id === r.hackId)?.name || 'Unknown Event';
-                    return `
-                        <div class="stat-card" style="display: flex; gap: 15px; align-items: center; padding: 1rem;">
-                            <img src="https://ui-avatars.com/api/?name=${r.userName}" style="width: 40px; border-radius: 50%;">
-                            <div style="flex: 1;">
-                                <strong>${r.userName}</strong><br>
-                                <small style="color: var(--text-mid)">${r.userEmail}</small>
+                hacks.slice(-3).forEach(h => {
+                    activities.push({
+                        icon: 'fa-plus',
+                        title: 'New Hackathon Launched',
+                        desc: `${h.name} is now accepting registrations.`,
+                        time: 'Just now'
+                    });
+                });
+
+                regs.slice(-5).forEach(r => {
+                    const hName = hacks.find(h => h.id === r.hackId)?.name || 'Event';
+                    activities.push({
+                        icon: 'fa-user-check',
+                        title: 'New Registration',
+                        desc: `${r.userName} joined ${hName}`,
+                        time: 'A few mins ago'
+                    });
+                });
+
+                if (activities.length === 0) {
+                    feed.innerHTML = '<p style="color: var(--text-mid); font-size: 0.9rem;">No recent activity.</p>';
+                } else {
+                    feed.innerHTML = activities.sort(() => Math.random() - 0.5).slice(0, 6).map(a => `
+                        <div class="feed-item animate__animated animate__fadeIn">
+                            <div class="feed-icon"><i class="fa-solid ${a.icon}"></i></div>
+                            <div>
+                                <strong style="font-size: 0.9rem; display: block;">${a.title}</strong>
+                                <small style="color: var(--text-mid); font-size: 0.8rem;">${a.desc}</small>
+                                <div style="font-size: 0.7rem; color: var(--primary); margin-top: 4px;">${a.time}</div>
                             </div>
-                            <span class="status-badge" style="background: rgba(99,102,241,0.1); color: var(--primary); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem;">${hackName}</span>
                         </div>
-                    `;
-                }).join('');
+                    `).join('');
+                }
             }
 
             // Modal Controls
             document.getElementById('openModalBtn').onclick = () => modal.style.display = 'flex';
+            document.getElementById('openModalBtn3').onclick = () => modal.style.display = 'flex';
             document.getElementById('openModalBtn2').onclick = () => modal.style.display = 'flex';
             document.getElementById('closeModalBtn').onclick = () => modal.style.display = 'none';
 

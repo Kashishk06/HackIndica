@@ -330,6 +330,7 @@
         <a href="#" class="nav-item" data-section="projects"><i class="fa-solid fa-code-branch"></i> My Projects</a>
         <a href="#" class="nav-item" data-section="teams"><i class="fa-solid fa-users"></i> Team Mates</a>
         <a href="#" class="nav-item" data-section="leaderboard"><i class="fa-solid fa-trophy"></i> Leaderboards</a>
+        <a href="#" class="nav-item" data-section="resources"><i class="fa-solid fa-book-sparkles"></i> Resource Hub</a>
         <a href="#" class="nav-item logout-btn" id="logoutBtn"><i class="fa-solid fa-sign-out"></i> Logout</a>
     </div>
 
@@ -451,6 +452,36 @@
                 </table>
             </div>
         </div>
+
+        <!-- Section: Resources -->
+        <div id="section-resources" class="dashboard-section" style="display: none;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                <div class="hack-card">
+                    <div style="font-size: 2rem; color: var(--primary); margin-bottom: 1rem;"><i
+                            class="fa-solid fa-graduation-cap"></i></div>
+                    <h3>Developer Roadmap</h3>
+                    <p style="color: var(--text-mid); font-size: 0.9rem;">Curated paths for Front-end, Back-end, and AI
+                        engineering.</p>
+                    <button class="btn btn-outline" style="width: 100%; margin-top: 1.5rem;">Access Path</button>
+                </div>
+                <div class="hack-card">
+                    <div style="font-size: 2rem; color: #10b981; margin-bottom: 1rem;"><i
+                            class="fa-solid fa-server"></i></div>
+                    <h3>API Sandbox</h3>
+                    <p style="color: var(--text-mid); font-size: 0.9rem;">Test your integrations with our mock API
+                        endpoints before moving to production.</p>
+                    <button class="btn btn-outline" style="width: 100%; margin-top: 1.5rem;">Try Sandbox</button>
+                </div>
+                <div class="hack-card">
+                    <div style="font-size: 2rem; color: #f59e0b; margin-bottom: 1rem;"><i
+                            class="fa-solid fa-puzzle-piece"></i></div>
+                    <h3>Component UI Kit</h3>
+                    <p style="color: var(--text-mid); font-size: 0.9rem;">HackIndica specialized UI components for
+                        building lightning fast MVP's.</p>
+                    <button class="btn btn-outline" style="width: 100%; margin-top: 1.5rem;">View Components</button>
+                </div>
+            </div>
+        </div>
     </main>
 
     <div class="toast" id="successToast">Successfully Registered! See you at the hack.</div>
@@ -474,7 +505,8 @@
                 explore: "Find your next big challenge and start building.",
                 projects: "Overview of your ongoing and completed projects.",
                 teams: "Collaborate with your teammates in real-time.",
-                leaderboard: "Check where you stand in the global rankings."
+                leaderboard: "Check where you stand in the global rankings.",
+                resources: "Curated tools and tutorials for maximum hacking efficiency."
             };
 
             navItems.forEach(item => {
